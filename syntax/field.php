@@ -15,7 +15,7 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
-class syntax_plugin_brendtemplate_field extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
     public function getType() {
         return 'substition';
     }
@@ -30,7 +30,7 @@ class syntax_plugin_brendtemplate_field extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('@@.+?@@',$mode,'plugin_brendtemplate_field');
+        $this->Lexer->addSpecialPattern('@@.+?@@',$mode,'plugin_templatery_field');
     }
 
     public function handle($match, $state, $pos, &$handler){

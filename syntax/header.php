@@ -9,7 +9,7 @@
 if (!defined('DOKU_PLUGIN'))
     define('DOKU_PLUGIN', DOKU_INC . 'lib/plugins/');
 
-class syntax_plugin_brendtemplate_header extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
 
     function getType() {
         // invented new type
@@ -25,7 +25,7 @@ class syntax_plugin_brendtemplate_header extends DokuWiki_Syntax_Plugin {
     }
 
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('[ \t]*={2,}[^\n]+={2,}[ \t]*(?=\n)', $mode, 'plugin_brendtemplate_header');
+        $this->Lexer->addSpecialPattern('[ \t]*={2,}[^\n]+={2,}[ \t]*(?=\n)', $mode, 'plugin_templatery_header');
     }
 
     function handle($match, $state, $pos, &$handler) {
@@ -41,7 +41,7 @@ class syntax_plugin_brendtemplate_header extends DokuWiki_Syntax_Plugin {
         if ($handler->status['section']) $handler->_addCall('section_close',array(),$pos);
 
         // replace this with plugin call
-        $handler->addPluginCall('brendtemplate_header', array($title,$level,$pos), $state, $pos, $match);
+        $handler->addPluginCall('templatery_header', array($title,$level,$pos), $state, $pos, $match);
 
         // open a new section after we started with this header
         $handler->_addCall('section_open',array($level),$pos);

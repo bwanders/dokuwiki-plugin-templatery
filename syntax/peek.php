@@ -15,7 +15,7 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
-class syntax_plugin_brendtemplate_transclusion extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_peek extends DokuWiki_Syntax_Plugin {
     public function getType() {
         return 'substition';
     }
@@ -30,13 +30,13 @@ class syntax_plugin_brendtemplate_transclusion extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{transclude>[^}]*?}}',$mode,'plugin_brendtemplate_transclusion');
+        $this->Lexer->addSpecialPattern('\{\{peek>[^}]*?}}',$mode,'plugin_templatery_peek');
     }
 
     public function handle($match, $state, $pos, &$handler){
         global $ID;
 
-        preg_match('/\{\{transclude>([^\}]+)}}/',$match,$capture);
+        preg_match('/\{\{peek>([^\}]+)}}/',$match,$capture);
         $page = $capture[1];
 
         resolve_pageid(getNS($ID),$page,$exists);
