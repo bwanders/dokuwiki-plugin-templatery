@@ -29,6 +29,8 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
     }
 
     function handle($match, $state, $pos, &$handler) {
+        // code joinked from handler.php
+
         // get level and title
         $title = trim($match);
         $level = 7 - strspn($title,'=');
