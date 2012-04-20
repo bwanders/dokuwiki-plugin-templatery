@@ -46,7 +46,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
         $template = $this->helper->loadTemplate($page);
 
-        return array($page,$template);
+        return array($page, $template);
     }
 
     public function render($mode, &$R, $data) {
@@ -56,16 +56,20 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
         // check for permission
         if (auth_quickaclcheck($template['source']) < AUTH_READ) {
-            $template = null;
+            $template['instructions'] = null;
         }
 
-        if($template != null) {
+        if($template['instructions'] != null) {
+            // output instructions
+            $R->code(print_r($template['instructions'],1));
+
+            // display template
             $handler = new templatery_include_handler();
             $this->helper->applyTemplate($template, $handler, $R);
         } else {
-            msg('[template \''.$page.'\' not available]',-1);
             $R->internalLink($template['source'], '[template \''.$page.'\' not available]');
         }
+
 
         return true;
     }
@@ -75,7 +79,7 @@ class templatery_include_handler implements templatery_handler {
     public function field($mode, &$R, $field) {
         if($mode != 'xhtml') return false;
 
-        $R->doc .= $R->_xmlEntities($field.'BREND');
+        $R->doc .= $R->_xmlEntities('{field:'.$field.'}');
 
         return true;
     }
