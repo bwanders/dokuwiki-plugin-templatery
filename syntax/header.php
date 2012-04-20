@@ -49,8 +49,8 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
         $result = preg_split('/(@@.*?@@)/msS', $title, null, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
         $instructions = array();
         foreach($result as $r) {
-            if(strpos($r,'@@')===0) {
-                $instructions[] = array('field', substr($r,2,-2));
+            if(preg_match('/@@(.+?)(?:\|(.+?))?@@/msS',$r,$capture)) {
+                $instructions[] = array('field', $capture[1], $capture[2]);
             } else {
                 $instructions[] = array('text', $r);
             }
@@ -69,42 +69,71 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
     /**
      * Fakes a header. This method is heavily copied from inc/parser/xhtml.php.
      */
-    function render($mode, &$renderer, $data) {
+    function render($mode, &$R, $data) {
         list($text,$level,$instructions) = $data;
+
+        if($this->helper->isDelegating()) {
+            $text = '';
+            foreach($instructions as $ins) {
+                switch($ins[0]) {
+                    case 'text':
+                        $text .= $ins[1];
+                        break;
+
+                    case 'field':
+                        $text .= $this->helper->getField($mode, $R, $ins[1], $ins[2]);
+                        break;
+                }
+            }
+        }
+
         if ($mode == 'xhtml') {
         
             if(!$text) return;
             
-            $hid = $renderer->_headerToLink($text,true);
+            $hid = $R->_headerToLink($text,true);
 
             // only add items within the configured levels
-            $renderer->toc_additem($hid,$text,$level);
+            $R->toc_additem($hid,$text,$level);
 
             // adjust $node to reflect hierarchy of levels
-            $renderer->node[$level-1]++;
-            if ($level < $renderer->lastlevel) {
-                for ($i = 0; $i < $renderer->lastlevel-$level; $i++) {
-                    $renderer->node[$renderer->lastlevel-$i-1] = 0;
+            $R->node[$level-1]++;
+            if ($level < $R->lastlevel) {
+                for ($i = 0; $i < $R->lastlevel-$level; $i++) {
+                    $R->node[$R->lastlevel-$i-1] = 0;
                 }
             }
-            $renderer->lastlevel = $level;
+            $R->lastlevel = $level;
 
             // write the header
-            $renderer->doc .= DOKU_LF.'<h'.$level;
-            $renderer->doc .= '><a name="'.$hid.'" id="'.$hid.'">';
-            // $renderer->doc .= $renderer->_xmlEntities($text);
+            $R->doc .= DOKU_LF.'<h'.$level;
+            $R->doc .= '><a name="'.$hid.'" id="'.$hid.'">';
+            // $R->doc .= $R->_xmlEntities($text);
             foreach($instructions as $ins) {
                 $text = $ins[1];
                 switch($ins[0]) {
-                    case 'text': $renderer->doc .= $renderer->_xmlEntities($text); break;
-                    case 'field': $renderer->doc.= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$renderer->_xmlEntities($text).'&#8250;</span>'; break;
+                    case 'text':
+                        $R->doc .= $R->_xmlEntities($text);
+                        break;
+
+                    case 'field':
+                        if($this->helper->isDelegating()) {
+                            $this->helper->displayField($mode, $R, $ins[1], $ins[2]);
+                        } else {
+                            $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($text);
+                            if($ins[2]) {
+                                $R->doc .= '&#187;'.$R->_xmlEntities($ins[2]);
+                            }
+                            $R->doc .= '&#8250;</span>';
+                        }
+                        break;
                 }
             }
-            $renderer->doc .= "</a></h$level>".DOKU_LF;
+            $R->doc .= "</a></h$level>".DOKU_LF;
 
             return true;
         } elseif($mode == 'metadata') {
-            $renderer->header($text, $level, null);
+            $R->header($text, $level, null);
             return true;
         }
         return false;
