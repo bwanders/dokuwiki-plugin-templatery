@@ -16,7 +16,7 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once DOKU_PLUGIN.'syntax.php';
 require_once DOKU_PLUGIN.'templatery/templatery_handler.php';
 
-class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
     public function __construct() {
         $this->helper =& plugin_load('helper', 'templatery');
     }
@@ -35,13 +35,13 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}',$mode,'plugin_templatery_include');
+        $this->Lexer->addSpecialPattern('\{\{@[^}]+?}}',$mode,'plugin_templatery_template');
     }
 
     public function handle($match, $state, $pos, &$handler){
         global $ID;
 
-        preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
+        preg_match('/\{\{@([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
         $page = $capture[1];
         $vars = $capture[2];
 
@@ -72,7 +72,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
         if($template['instructions'] != null) {
             // display template
-            $handler = new templatery_include_handler($variables);
+            $handler = new templatery_template_handler($variables);
             $this->helper->applyTemplate($template, $handler, $R);
         } else {
             $R->p_open();
@@ -85,7 +85,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
     }
 }
 
-class templatery_include_handler implements templatery_handler {
+class templatery_template_handler implements templatery_handler {
     public function __construct($variables) {
         $this->vars = $variables;
     }
