@@ -1,14 +1,21 @@
-.templatery-field {
-    background-color: silver;
+.templatery-field,
+.templatery-start span,
+.templatery-end span,
+.templatery-hashinclude span {
     border-radius: 0.2em;
     padding-left: 0.2em;
     padding-right:0.2em;
 }
 
+.templatery-field {
+    background-color: silver;
+}
+
 .templatery-start span, .templatery-end span {
     background-color: rgb(255,128,128); 
-    border-radius: 2px; 
-    padding-left: 0.2em;
-    padding-right:0.2em;
+}
+
+.templatery-hashinclude span {
+    background-color: rgb(160,160,255);
 }
 
