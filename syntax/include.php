@@ -75,7 +75,9 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
             $handler = new templatery_include_handler($variables);
             $this->helper->applyTemplate($template, $handler, $R);
         } else {
+            $R->p_open();
             $R->internalLink($template['source'], '[template \''.$page.'\' not available]');
+            $R->p_close();
         }
 
 
