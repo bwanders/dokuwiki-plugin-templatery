@@ -42,13 +42,24 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
         // be a good handler, and maintain the call sequence
         if ($handler->status['section']) $handler->_addCall('section_close',array(),$pos);
 
-        // replace this with plugin call
-        $handler->addPluginCall('templatery_header', array($title,$level,$pos), $state, $pos, $match);
+        // output a plugin call to this plugin, instead of to the normal header
+        $result = preg_split('/(@@.*?@@)/msS', $title, null, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $instructions = array();
+        foreach($result as $r) {
+            if(strpos($r,'@@')===0) {
+                $instructions[] = array('field', substr($r,2,-2));
+            } else {
+                $instructions[] = array('text', $r);
+            }
+        }
+
+        $handler->addPluginCall('templatery_header', array($title,$level,$instructions), $state, $pos, $match);
 
         // open a new section after we started with this header
         $handler->_addCall('section_open',array($level),$pos);
         $handler->status['section'] = true;
 
+        // de not output a plugin instruction
         return false;
     }
 
@@ -57,7 +68,10 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
      */
     function render($mode, &$renderer, $data) {
         if ($mode == 'xhtml') {
-            list($text,$level,$pos) = $data;
+            list($text,$level,$instructions) = $data;
+        
+            if(!$text) return;
+            
             $hid = $renderer->_headerToLink($text,true);
 
             // only add items within the configured levels
@@ -75,7 +89,14 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
             // write the header
             $renderer->doc .= DOKU_LF.'<h'.$level;
             $renderer->doc .= '><a name="'.$hid.'" id="'.$hid.'">';
-            $renderer->doc .= $renderer->_xmlEntities($text).' BREND';
+            // $renderer->doc .= $renderer->_xmlEntities($text);
+            foreach($instructions as $ins) {
+                $text = $ins[1];
+                switch($ins[0]) {
+                    case 'text': $renderer->doc .= $renderer->_xmlEntities($text); break;
+                    case 'field': $renderer->doc.= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$renderer->_xmlEntities($text).'&#8250;</span>'; break;
+                }
+            }
             $renderer->doc .= "</a></h$level>".DOKU_LF;
 
             return true;
