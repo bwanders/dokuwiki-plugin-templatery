@@ -56,7 +56,7 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
         // render a preview
         if($mode != 'xhtml') return false;
 
-        $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($field);
+        $R->doc .= '<span class="templatery-field">&#8249;'.$R->_xmlEntities($field);
         if($default) {
             $R->doc .= '&#187;'.$R->_xmlEntities($default);
         }

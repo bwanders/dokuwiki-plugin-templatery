@@ -120,7 +120,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
                         if($this->helper->isDelegating()) {
                             $this->helper->displayField($mode, $R, $ins[1], $ins[2]);
                         } else {
-                            $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($text);
+                            $R->doc .= '<span class="templatery-field">&#8249;'.$R->_xmlEntities($text);
                             if($ins[2]) {
                                 $R->doc .= '&#187;'.$R->_xmlEntities($ins[2]);
                             }

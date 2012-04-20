@@ -73,10 +73,10 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
         switch($data[0]) {
             case DOKU_LEXER_ENTER:
-                $R->doc .= '<p><span style="background-color: rgb(255,128,128); border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;template&#8250;</span></p>';
+                $R->doc .= '<p class="templatery-start"><span>&#8249;template&#8250;</span></p>';
                 break;
             case DOKU_LEXER_EXIT:
-                $R->doc .= '<p><span style="background-color: rgb(255,128,128); border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;/template&#8250;</span></p>';
+                $R->doc .= '<p class="templatery-end"><span>&#8249;/template&#8250;</span></p>';
                 break;
         }
 

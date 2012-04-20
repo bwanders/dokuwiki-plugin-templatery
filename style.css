@@ -1,0 +1,14 @@
+.templatery-field {
+    background-color: silver;
+    border-radius: 0.2em;
+    padding-left: 0.2em;
+    padding-right:0.2em;
+}
+
+.templatery-start span, .templatery-end span {
+    background-color: rgb(255,128,128); 
+    border-radius: 2px; 
+    padding-left: 0.2em;
+    padding-right:0.2em;
+}
+
