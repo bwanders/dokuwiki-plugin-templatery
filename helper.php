@@ -18,9 +18,10 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * Loads a template.
      * 
      * @param page string the unresolved page id
+     * @param handler object the current handler
      * @return an array of instructions, or null if the template could not be made available
      */
-    public function loadTemplate($page){
+    public function loadTemplate($page, &$handler){
         // use configured namespace as resolve base for template finding
         resolve_pageid(cleanID($this->getConf('template_namespace')), $page, $exists);
 

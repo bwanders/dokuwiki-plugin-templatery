@@ -44,7 +44,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
         preg_match('/\{\{include>([^\}]+)}}/',$match,$capture);
         $page = $capture[1];
 
-        $template = $this->helper->loadTemplate($page);
+        $template = $this->helper->loadTemplate($page, $handler);
 
         return array($page, $template);
     }
@@ -59,7 +59,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
         if($template['instructions'] != null) {
             // output instructions
-//            $R->code(print_r($template['instructions'],1));
+//          $R->code(print_r($template['instructions'],1));
 
             // display template
             $handler = new templatery_include_handler();

@@ -48,12 +48,20 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, &$handler){
         switch($state) {
             case DOKU_LEXER_ENTER:
+                if ($handler->status['section']) {
+                    $handler->_addCall('section_close',array(),$pos);
+                    $handler->status['section'] = false;
+                }
                 return array($state);
             case DOKU_LEXER_UNMATCHED:
                 // we don't care about unmatched things; just get them rendered
                 $handler->_addCall('cdata', array($match), $pos);
                 return false;
             case DOKU_LEXER_EXIT:
+                if ($handler->status['section']) {
+                    $handler->_addCall('section_close',array(),$pos);
+                    $handler->status['section'] = false;
+                }
                 return array($state);
         }
 
