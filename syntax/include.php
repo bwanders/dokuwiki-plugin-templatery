@@ -58,9 +58,6 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
         }
 
         if($template['instructions'] != null) {
-            // output instructions
-//          $R->code(print_r($template['instructions'],1));
-
             // display template
             $handler = new templatery_include_handler();
             $this->helper->applyTemplate($template, $handler, $R);
