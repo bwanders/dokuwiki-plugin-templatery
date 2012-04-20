@@ -63,6 +63,12 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return count(self::$delegates) > 0;
     }
 
+    public function getDelegate($idx=0) {
+        $idx = count(self::$delegates)-1-$idx;
+
+        return isset(self::$delegates[$idx]) ? self::$delegates[$idx] : null;
+    }
+
     /**
      * Renders a template.
      *
@@ -80,21 +86,21 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * Delegate hasField.
      */
     public function hasField($field) {
-        return end(self::$delegates)->hasField($field);
+        return $this->getDelegate()->hasField($field);
     }
 
     /**
      * Delegate getField.
      */
     public function getField($mode, &$R, $field, $default) {
-        return end(self::$delegates)->getField($mode, $R, $field, $default);
+        return $this->getDelegate()->getField($mode, $R, $field, $default);
     }
 
     /**
      * Delegate displayField.
      */
     public function displayField($mode, &$R, $field, $default) {
-        return end(self::$delegates)->displayField($mode, $R, $field, $default);
+        return $this->getDelegate()->displayField($mode, $R, $field, $default);
     }
 }
 
