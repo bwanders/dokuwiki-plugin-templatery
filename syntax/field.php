@@ -16,6 +16,10 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once DOKU_PLUGIN.'syntax.php';
 
 class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
+    public function __construct() {
+        $this->helper =& plugin_load('helper', 'templatery');
+    }
+
     public function getType() {
         return 'substition';
     }
@@ -38,13 +42,19 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
 
         preg_match('/@@(.+?)@@/',$match,$capture);
 
-        return array('text'=>$capture[1]);
+        return array($capture[1]);
     }
 
     public function render($mode, &$R, $data) {
+        list($field) = $data;
+
+        if(!$this->helper->isPreview()) {
+            return $this->helper->delegate('field', $mode, $R, $field);
+        }
+
         if($mode != 'xhtml') return false;
 
-        $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($data['text']).'&#8250;</span>';
+        $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($field).'&#8250;</span>';
 
         return true;
     }
