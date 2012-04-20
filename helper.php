@@ -49,6 +49,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             if($inTemplate) $template[]=$ins;
         }
 
+        // return the template, if any
         return array('source'=>$page,'instructions'=>$template);
     }
 

@@ -70,8 +70,8 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
      * Fakes a header. This method is heavily copied from inc/parser/xhtml.php.
      */
     function render($mode, &$renderer, $data) {
+        list($text,$level,$instructions) = $data;
         if ($mode == 'xhtml') {
-            list($text,$level,$instructions) = $data;
         
             if(!$text) return;
             
@@ -107,6 +107,9 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
             }
             $renderer->doc .= "</a></h$level>".DOKU_LF;
 
+            return true;
+        } elseif($mode == 'metadata') {
+            $renderer->header($text, $level, null);
             return true;
         }
         return false;

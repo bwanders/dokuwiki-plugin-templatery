@@ -50,8 +50,6 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
     }
 
     public function render($mode, &$R, $data) {
-        if($mode != 'xhtml') return false;
-
         list($page, $template) = $data;
 
         // check for permission
@@ -61,7 +59,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
         if($template['instructions'] != null) {
             // output instructions
-            $R->code(print_r($template['instructions'],1));
+//            $R->code(print_r($template['instructions'],1));
 
             // display template
             $handler = new templatery_include_handler();
