@@ -14,6 +14,8 @@ if (!defined('DOKU_TAB')) define('DOKU_TAB', "\t");
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 class helper_plugin_templatery extends DokuWiki_Plugin {
+    private static $opened = array();
+
     /**
      * Loads a template.
      * 
@@ -25,8 +27,28 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         // use configured namespace as resolve base for template finding
         resolve_pageid(cleanID($this->getConf('template_namespace')), $page, $exists);
 
-        // load template content
-        $instructions = p_cached_instructions(wikiFN($page),false,$page);
+        $result = array(
+            'source' => $page,
+            'instructions' => null
+        );
+
+        // check availability
+        if(!$exists) {
+            $result['error'] = 'template_nonexistant';
+            return $result;
+        }
+
+        // check recursion
+        if(in_array($page, self::$opened)) {
+            msg('Recursive template.',-1);
+            $result['error'] = 'recursive_templates';
+            return $result;
+        }
+
+        // load template
+        array_push(self::$opened, $page);
+        $instructions = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
+        array_pop(self::$opened);
 
         $template = array();
 
@@ -51,7 +73,8 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         }
 
         // return the template, if any
-        return array('source'=>$page,'instructions'=>$template);
+        $result['instructions'] = $template;
+        return $result;
     }
 
     private static $delegates = array();

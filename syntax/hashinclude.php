@@ -80,11 +80,12 @@ class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
             // render a preview
             if($mode != 'xhtml') return false;
 
-            $R->doc .= '<p class="templatery-hashinclude"><span>&#8249;#include '.$R->_xmlEntities($page);
+            $R->doc .= '<p class="templatery-hashinclude"><span>&#8249;#include ';
+            $R->internallink($template['source'],$page);
             $R->doc .= '&#8250;</span></p>';
         } else {
             $R->p_open();
-            $R->internalLink($template['source'], '[template \''.$page.'\' not available]');
+            $R->internalLink($template['source'], '[template \''.$page.'\' not available: '.$template['error'].']');
             $R->p_close();
         }
  
