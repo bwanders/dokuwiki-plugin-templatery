@@ -1,9 +1,9 @@
 <?php
 /**
- * Datatemplate plugin (fake header)
+ * DokuWiki Plugin templatery (Fake header)
  *
- * @license GPL 2 (http://www.gnu.org/licenses/gpl.html)
- * @author  Brend Wanders <b.wanders@xs4all.nl>
+ * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
+ * @author  Brend Wanders <b.wanders@utwente.nl>
  */
 
 if (!defined('DOKU_PLUGIN'))
