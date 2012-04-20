@@ -57,10 +57,10 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     private static $delegates = array();
 
     /**
-     * Check whether we should preview or delegate.
+     * Should we delegate or preview?
      */
-    public function isPreview() {
-        return count(self::$delegates) == 0;
+    public function isDelegating() {
+        return count(self::$delegates) > 0;
     }
 
     /**
@@ -77,19 +77,24 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     }
 
     /**
-     * Delegates a call to the current delegate.
-     *
-     * @param call string the method to invoke
-     * @param mode string the rendering mode
-     * @param R object the renderer
-     * @param data array the data for the call
+     * Delegate hasField.
      */
-    public function delegate($call, $mode, &$R, $data) {
-        if($this->isPreview()) {
-            return false;
-        }
+    public function hasField($field) {
+        return end(self::$delegates)->hasField($field);
+    }
 
-        return call_user_func_array(array(end(self::$delegates), $call), array($mode, $R, $data));
+    /**
+     * Delegate getField.
+     */
+    public function getField($mode, &$R, $field, $default) {
+        return end(self::$delegates)->getField($mode, $R, $field, $default);
+    }
+
+    /**
+     * Delegate displayField.
+     */
+    public function displayField($mode, &$R, $field, $default) {
+        return end(self::$delegates)->displayField($mode, $R, $field, $default);
     }
 }
 

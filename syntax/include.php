@@ -35,22 +35,35 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{include>[^}]*?}}',$mode,'plugin_templatery_include');
+        $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}',$mode,'plugin_templatery_include');
     }
 
     public function handle($match, $state, $pos, &$handler){
         global $ID;
 
-        preg_match('/\{\{include>([^\}]+)}}/',$match,$capture);
+        preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
         $page = $capture[1];
+        $vars = $capture[2];
+
+        $variables = array();
+        $vars = explode('|', $vars);
+        $j = 0;
+        for($i=0;$i<count($vars);$i++) {
+            if(trim($vars[$i])=='') continue;
+            if(preg_match('/^(.+?)=(.+)$/',$vars[$i],$capture)) {
+                $variables[$capture[1]] = $capture[2];
+            } else {
+                $variables[$j++] = $vars[$i];
+            }
+        }
 
         $template = $this->helper->loadTemplate($page, $handler);
 
-        return array($page, $template);
+        return array($page, $template, $variables);
     }
 
     public function render($mode, &$R, $data) {
-        list($page, $template) = $data;
+        list($page, $template, $variables) = $data;
 
         // check for permission
         if (auth_quickaclcheck($template['source']) < AUTH_READ) {
@@ -59,7 +72,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
         if($template['instructions'] != null) {
             // display template
-            $handler = new templatery_include_handler();
+            $handler = new templatery_include_handler($variables);
             $this->helper->applyTemplate($template, $handler, $R);
         } else {
             $R->internalLink($template['source'], '[template \''.$page.'\' not available]');
@@ -71,10 +84,24 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 }
 
 class templatery_include_handler implements templatery_handler {
-    public function field($mode, &$R, $field) {
+    public function __construct($variables) {
+        $this->vars = $variables;
+    }
+
+    public function hasField($field) {
+        return isset($this->vars[$field]);
+    }
+
+    public function getField($mode, &$R, $field, $default=null) {
+        return $this->hasField($field) ? $this->vars[$field] : $default;
+    }
+
+    public function displayField($mode, &$R, $field, $default=null) {
         if($mode != 'xhtml') return false;
 
-        $R->doc .= $R->_xmlEntities('{field:'.$field.'}');
+        $value = $this->getField($mode, $R, $field, $default);
+
+        if($value != null) $R->doc .= $R->_xmlEntities($value);
 
         return true;
     }

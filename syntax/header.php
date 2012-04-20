@@ -97,12 +97,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
                 $text = $ins[1];
                 switch($ins[0]) {
                     case 'text': $renderer->doc .= $renderer->_xmlEntities($text); break;
-                    case 'field':
-                    if($this->helper->isPreview()){
-                        $renderer->doc.= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$renderer->_xmlEntities($text).'&#8250;</span>'; break;
-                    } else {
-                        $this->helper->delegate('field', $mode, $renderer, $text);
-                    }
+                    case 'field': $renderer->doc.= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$renderer->_xmlEntities($text).'&#8250;</span>'; break;
                 }
             }
             $renderer->doc .= "</a></h$level>".DOKU_LF;

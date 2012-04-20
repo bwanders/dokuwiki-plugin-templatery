@@ -48,8 +48,12 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
     public function render($mode, &$R, $data) {
         list($field, $default) = $data;
 
-        if($this->helper->delegate('field', $mode, $R, $field)) return true;
+        // check if we are delegating
+        if($this->helper->isDelegating()) {
+            return $this->helper->displayField($mode, $R, $field, $default);
+        }
 
+        // render a preview
         if($mode != 'xhtml') return false;
 
         $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($field);
