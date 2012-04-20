@@ -48,9 +48,7 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
     public function render($mode, &$R, $data) {
         list($field) = $data;
 
-        if(!$this->helper->isPreview()) {
-            return $this->helper->delegate('field', $mode, $R, $field);
-        }
+        if($this->helper->delegate('field', $mode, $R, $field)) return true;
 
         if($mode != 'xhtml') return false;
 

@@ -85,6 +85,10 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * @param data array the data for the call
      */
     public function delegate($call, $mode, &$R, $data) {
+        if($this->isPreview()) {
+            return false;
+        }
+
         return call_user_func_array(array(end(self::$delegates), $call), array($mode, $R, $data));
     }
 }
