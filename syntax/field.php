@@ -40,19 +40,23 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, &$handler){
         global $ID;
 
-        preg_match('/@@(.+?)@@/',$match,$capture);
+        preg_match('/@@(.+?)(?:\|(.+?))?@@/msS',$match,$capture);
 
-        return array($capture[1]);
+        return array($capture[1], $capture[2]);
     }
 
     public function render($mode, &$R, $data) {
-        list($field) = $data;
+        list($field, $default) = $data;
 
         if($this->helper->delegate('field', $mode, $R, $field)) return true;
 
         if($mode != 'xhtml') return false;
 
-        $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($field).'&#8250;</span>';
+        $R->doc .= '<span style="background-color: silver; border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;'.$R->_xmlEntities($field);
+        if($default) {
+            $R->doc .= '&#187;'.$R->_xmlEntities($default);
+        }
+        $R->doc .= '&#8250;</span>';
 
         return true;
     }
