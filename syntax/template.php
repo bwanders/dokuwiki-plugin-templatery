@@ -50,7 +50,9 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             case DOKU_LEXER_ENTER:
                 return array($state);
             case DOKU_LEXER_UNMATCHED:
-                return array($state, $match);
+                // we don't care about unmatched things; just get them rendered
+                $handler->_addCall('cdata', array($match), $pos);
+                return false;
             case DOKU_LEXER_EXIT:
                 return array($state);
         }
@@ -64,9 +66,6 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
         switch($data[0]) {
             case DOKU_LEXER_ENTER:
                 $R->doc .= '<p><span style="background-color: rgb(255,128,128); border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;template&#8250;</span></p>';
-                break;
-            case DOKU_LEXER_UNMATCHED:
-                $R->doc .= $R->_xmlEntities($data[1]);
                 break;
             case DOKU_LEXER_EXIT:
                 $R->doc .= '<p><span style="background-color: rgb(255,128,128); border-radius: 2px; padding-left: 0.2em; padding-right:0.2em">&#8249;/template&#8250;</span></p>';
