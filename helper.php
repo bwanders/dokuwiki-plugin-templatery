@@ -36,13 +36,13 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             $ins = $instructions[$i];
 
             // we encounter a @@template@@
-            if($ins[0]=='plugin' && $ins[1][0]=='templatery_template' && $ins[1][1][0] == DOKU_LEXER_ENTER) {
+            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER) {
                 $inTemplate = true;
                 continue;
             }
 
             // we encounter a @@/template@@
-            if($ins[0]=='plugin' && $ins[1][0]=='templatery_template' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
+            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
                 break;
             }
 

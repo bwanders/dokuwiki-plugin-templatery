@@ -15,7 +15,7 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
-class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
     public function getType() {
         return 'container';
     }
@@ -33,16 +33,16 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
     }
 
     public function accepts($mode) {
-        return $mode != 'plugin_templatery_template' && parent::accepts($mode);
+        return $mode != 'plugin_templatery_wrapper' && parent::accepts($mode);
     }
 
 
     public function connectTo($mode) {
-        $this->Lexer->addEntryPattern('@@template@@(?=.*?@@/template@@)',$mode,'plugin_templatery_template');
+        $this->Lexer->addEntryPattern('@@template@@(?=.*?@@/template@@)',$mode,'plugin_templatery_wrapper');
     }
 
     public function postConnect() {
-        $this->Lexer->addExitPattern('@@/template@@','plugin_templatery_template');
+        $this->Lexer->addExitPattern('@@/template@@','plugin_templatery_wrapper');
     }
 
     public function handle($match, $state, $pos, &$handler){
