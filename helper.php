@@ -31,7 +31,9 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
 
         // now we mangle all instructions to end up with a clean and nestable list of instructions
         $inTemplate = false;
-        foreach($instructions as $ins) {
+        for($i=0;$i<count($instructions);$i++) {
+            $ins = $instructions[$i];
+
             // we encounter a @@template@@
             if($ins[0]=='plugin' && $ins[1][0]=='templatery_template' && $ins[1][1][0] == DOKU_LEXER_ENTER) {
                 $inTemplate = true;
