@@ -73,10 +73,10 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
 
         switch($data[0]) {
             case DOKU_LEXER_ENTER:
-                $R->doc .= '<p class="templatery-start"><span>&#8249;template&#8250;</span></p>';
+                $R->doc .= '<div class="templatery-wrapper">';
                 break;
             case DOKU_LEXER_EXIT:
-                $R->doc .= '<p class="templatery-end"><span>&#8249;/template&#8250;</span></p>';
+                $R->doc .= '</div>';
                 break;
         }
 
