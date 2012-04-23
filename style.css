@@ -1,7 +1,7 @@
 .templatery-field,
 .templatery-start span,
 .templatery-end span,
-.templatery-hashinclude span {
+.templatery-include span {
     border-radius: 0.2em;
     padding-left: 0.2em;
     padding-right:0.2em;
@@ -15,7 +15,7 @@
     background-color: silver;
 }
 
-.templatery-hashinclude span {
+.templatery-include span {
     background-color: #dfd;
 }
 

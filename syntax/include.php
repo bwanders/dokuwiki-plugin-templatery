@@ -16,7 +16,7 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once DOKU_PLUGIN.'syntax.php';
 require_once DOKU_PLUGIN.'templatery/templatery_handler.php';
 
-class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
     function __construct() {
         $this->helper =& plugin_load('helper','templatery');
     }
@@ -35,7 +35,7 @@ class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
     }
 
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_hashinclude');
+        $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_include');
     }
 
     function handle($match, $state, $pos, &$handler) {
@@ -86,13 +86,13 @@ class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
             }
 
             // display template
-            $handler = new templatery_hashinclude_handler($variables, $this->helper->getDelegate());
+            $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
             $this->helper->applyTemplate($template, $handler, $R);
             return true;
         } else {
             // render a preview
             if($mode == 'xhtml') {
-                $R->doc .= '<p class="templatery-hashinclude"><span>&#8249;#include ';
+                $R->doc .= '<p class="templatery-include"><span>&#8249;#include ';
                 $R->internallink($template['source'],$page);
                 if(isset($template['error']) && $template['error'] != 'template_nonexistant') {
                     $R->doc .= ': '. $R->_xmlEntities(sprintf($this->getLang($template['error']),$page));
@@ -112,7 +112,7 @@ class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
     }
 }
 
-class templatery_hashinclude_handler implements templatery_handler {
+class templatery_include_handler implements templatery_handler {
     public function __construct($variables, $parent) {
         $this->translation = $variables;
         $this->parent = $parent;
