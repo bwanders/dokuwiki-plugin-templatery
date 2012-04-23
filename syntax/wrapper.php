@@ -38,11 +38,11 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addEntryPattern('@@template@@(?=.*?@@/template@@)',$mode,'plugin_templatery_wrapper');
+        $this->Lexer->addEntryPattern('<template>(?=.*?</template>)',$mode,'plugin_templatery_wrapper');
     }
 
     public function postConnect() {
-        $this->Lexer->addExitPattern('@@/template@@','plugin_templatery_wrapper');
+        $this->Lexer->addExitPattern('</template>','plugin_templatery_wrapper');
     }
 
     public function handle($match, $state, $pos, &$handler){
