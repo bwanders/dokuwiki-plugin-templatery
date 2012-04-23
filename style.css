@@ -8,14 +8,23 @@
 }
 
 .templatery-field {
-    background-color: silver;
+    background-color: #ddf;
 }
 
 .templatery-start span, .templatery-end span {
-    background-color: rgb(255,128,128); 
+    background-color: silver;
 }
 
 .templatery-hashinclude span {
-    background-color: rgb(160,160,255);
+    background-color: #dfd;
 }
 
+.templatery-error {
+    background-image: url(../../images/error.png);
+    
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    font-size: 100%;
+    padding-left: 1.5em;
+    overflow: hidden;
+}
