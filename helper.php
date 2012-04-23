@@ -16,6 +16,10 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 class helper_plugin_templatery extends DokuWiki_Plugin {
     private static $opened = array();
 
+    public function cleanTemplateId($id) {
+        return str_replace(array(':','.'),'',cleanID($id));
+    }
+
     /**
      * Loads a template.
      * 
@@ -24,6 +28,11 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * @return an array of instructions, or null if the template could not be made available
      */
     public function loadTemplate($page, &$handler){
+        list($page, $hash) = explode('#',$page,2);
+        if(empty($hash)) $hash = '';
+
+        $hash = $this->cleanTemplateId($hash);
+
         // use configured namespace as resolve base for template finding
         resolve_pageid(cleanID($this->getConf('template_namespace')), $page, $exists);
 
@@ -49,7 +58,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         $instructions = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
         array_pop(self::$opened);
 
-        $template = array();
+        $template = false;
 
         // now we mangle all instructions to end up with a clean and nestable list of instructions
         $inTemplate = false;
@@ -57,18 +66,24 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             $ins = $instructions[$i];
 
             // we encounter a @@template@@
-            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER) {
+            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER && (empty($hash) || $ins[1][1][1] == $hash)) {
                 $inTemplate = true;
+                $template = array();
                 continue;
             }
 
             // we encounter a @@/template@@
-            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
+            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT && $inTemplate) {
                 break;
             }
 
             // all other instructions
             if($inTemplate) $template[]=$ins;
+        }
+
+        if($template === false) {
+            $result['error'] = 'template_nonexistant';
+            return $result;
         }
 
         // return the template, if any

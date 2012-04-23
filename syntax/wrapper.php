@@ -16,6 +16,10 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once DOKU_PLUGIN.'syntax.php';
 
 class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
+    public function __construct() {
+        $this->helper =& plugin_load('helper', 'templatery');
+    }
+
     public function getType() {
         return 'container';
     }
@@ -38,7 +42,7 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addEntryPattern('<template>(?=.*?</template>)',$mode,'plugin_templatery_wrapper');
+        $this->Lexer->addEntryPattern('<template[^>\n]*>(?=.*?</template>)',$mode,'plugin_templatery_wrapper');
     }
 
     public function postConnect() {
@@ -52,7 +56,8 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
                     $handler->_addCall('section_close',array(),$pos);
                     $handler->status['section'] = false;
                 }
-                return array($state);
+                preg_match('/<template([^>\n]*)>/',$match,$capture);
+                return array($state, $this->helper->cleanTemplateId($capture[1]), $capture[1]);
             case DOKU_LEXER_UNMATCHED:
                 // we don't care about unmatched things; just get them rendered
                 $handler->_addCall('cdata', array($match), $pos);
