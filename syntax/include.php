@@ -118,25 +118,33 @@ class templatery_include_handler implements templatery_handler {
         $this->parent = $parent;
     }
 
+    private function getTranslation($field) {
+        if (isset($this->translation[$field])) {
+            return $this->translation[$field];
+        }
+
+        return $field;
+    }
+
     public function hasField($field) {
-        if($this->parent != null && isset($this->translation[$field])) {
-            return $this->parent->hasField($this->translation[$field]);
+        if($this->parent != null) {
+            return $this->parent->hasField($this->getTranslation($field));
         }
 
         return false;
     }
 
     public function getField($mode, &$R, $field, $default=null) {
-        if($this->parent != null && isset($this->translation[$field])) {
-            return $this->parent->getField($mode, $R, $this->translation[$field], $default);
+        if($this->parent != null) {
+            return $this->parent->getField($mode, $R, $this->getTranslation($field), $default);
         }
 
         return null;
     }
 
     public function displayField($mode, &$R, $field, $default=null) {
-        if($this->parent != null && isset($this->translation[$field])) {
-            return $this->parent->displayField($mode, $R, $this->translation[$field], $default);
+        if($this->parent != null) {
+            return $this->parent->displayField($mode, $R, $this->getTranslation($field), $default);
         }
 
         return true;
