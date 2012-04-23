@@ -92,7 +92,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
         } else {
             // render a preview
             if($mode == 'xhtml') {
-                $R->doc .= '<p class="templatery-include"><span>&#8249;#include ';
+                $R->doc .= '<p class="templatery-include"><span>&#8249;';
                 $R->internallink($template['source'],$page);
                 if(isset($template['error']) && $template['error'] != 'template_nonexistant') {
                     $R->doc .= ': '. $R->_xmlEntities(sprintf($this->getLang($template['error']),$page));
