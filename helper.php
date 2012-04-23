@@ -40,7 +40,6 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
 
         // check recursion
         if(in_array($page, self::$opened)) {
-            msg('Recursive template.',-1);
             $result['error'] = 'recursive_templates';
             return $result;
         }

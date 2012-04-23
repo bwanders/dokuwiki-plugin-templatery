@@ -65,31 +65,50 @@ class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
 
         // check for permission
         if (auth_quickaclcheck($template['source']) < AUTH_READ) {
-            $template['instructions'] = null;
+            $template['error'] = 'template_unavailable';
         }
 
-        if($template['instructions'] != null) {
-            // check if we are delegating
-            if($this->helper->isDelegating()) {
-                // display template
-                $handler = new templatery_hashinclude_handler($variables, $this->helper->getDelegate());
-                $this->helper->applyTemplate($template, $handler, $R);
+        // are we 'live', and do we have actual instructions?
+        if($this->helper->isDelegating()) {
+            // render errors as messages
+            if(isset($template['error'])) {
+                if($mode == 'xhtml') {
+                    msg(sprintf($this->getLang($template['error']),$page),-1);
+                    $R->p_open();
+                    $R->doc .= '<span class="templatery-error">';
+                    $R->internallink($template['source'],sprintf($this->getLang($template['error']),$page));
+                    $R->doc .= '</span>';
+                    $R->p_close();
+                }
+
+                // abort further rendering
+                return false;
+            }
+
+            // display template
+            $handler = new templatery_hashinclude_handler($variables, $this->helper->getDelegate());
+            $this->helper->applyTemplate($template, $handler, $R);
+            return true;
+        } else {
+            // render a preview
+            if($mode == 'xhtml') {
+                $R->doc .= '<p class="templatery-hashinclude"><span>&#8249;#include ';
+                $R->internallink($template['source'],$page);
+                if(isset($template['error']) && $template['error'] != 'template_nonexistant') {
+                    $R->doc .= ': '. $R->_xmlEntities(sprintf($this->getLang($template['error']),$page));
+                }
+                $R->doc .= '&#8250;</span></p>';
+                return true;
+            } elseif($mode == 'metadata') {
+                // render internal link to allow cache and backlinking to work for templates
+                $R->internallink($template['source'],$page);
                 return true;
             }
 
-            // render a preview
-            if($mode != 'xhtml') return false;
-
-            $R->doc .= '<p class="templatery-hashinclude"><span>&#8249;#include ';
-            $R->internallink($template['source'],$page);
-            $R->doc .= '&#8250;</span></p>';
-        } else {
-            $R->p_open();
-            $R->internalLink($template['source'], '[template \''.$page.'\' not available: '.$template['error'].']');
-            $R->p_close();
+            return false;
         }
- 
-        return true;
+
+        return false;
     }
 }
 

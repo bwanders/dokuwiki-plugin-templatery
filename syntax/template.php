@@ -67,20 +67,27 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
         // check for permission
         if (auth_quickaclcheck($template['source']) < AUTH_READ) {
-            $template['instructions'] = null;
+            $template['error'] = 'template_unavailable';
         }
 
-        if($template['instructions'] != null) {
-            // display template
-            $handler = new templatery_template_handler($variables);
-            $this->helper->applyTemplate($template, $handler, $R);
-        } else {
-            $R->p_open();
-            $R->internalLink($template['source'], '[template \''.$page.'\' not available]');
-            $R->p_close();
+        // render errors as messages
+        if(isset($template['error'])) {
+            if($mode == 'xhtml') {
+                msg(sprintf($this->getLang($template['error']),$page),-1);
+                $R->p_open();
+                $R->doc .= '<span class="templatery-error">';
+                $R->internallink($template['source'],sprintf($this->getLang($template['error']),$page));
+                $R->doc .= '</span>';
+                $R->p_close();
+            }
+
+            // abort further rendering
+            return false;
         }
 
-
+        // display template
+        $handler = new templatery_template_handler($variables);
+        $this->helper->applyTemplate($template, $handler, $R);
         return true;
     }
 }
