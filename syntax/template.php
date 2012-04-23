@@ -35,13 +35,13 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('\{\{@[^}]+?}}',$mode,'plugin_templatery_template');
+        $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}',$mode,'plugin_templatery_template');
     }
 
     public function handle($match, $state, $pos, &$handler){
         global $ID;
 
-        preg_match('/\{\{@([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
+        preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
         $page = $capture[1];
         $vars = $capture[2];
 

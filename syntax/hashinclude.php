@@ -35,11 +35,11 @@ class syntax_plugin_templatery_hashinclude extends DokuWiki_Syntax_Plugin {
     }
 
     function connectTo($mode) {
-        $this->Lexer->addSpecialPattern('@@#include +.+?@@', $mode, 'plugin_templatery_hashinclude');
+        $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_hashinclude');
     }
 
     function handle($match, $state, $pos, &$handler) {
-        preg_match('/@@#include +([^\|]+?)(?:\|(.+?))?@@/msS',$match,$capture);
+        preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
         $page = $capture[1];
         $vars = $capture[2];
 
