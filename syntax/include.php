@@ -95,7 +95,10 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
                 $R->doc .= '<p class="templatery-include"><span>&#8249;';
                 $R->internallink($template['source'],$page);
                 if(isset($template['error']) && $template['error'] != 'template_nonexistant') {
-                    $R->doc .= ': '. $R->_xmlEntities(sprintf($this->getLang($template['error']),$page));
+                    $R->doc .= '('. $R->_xmlEntities(sprintf($this->getLang($template['error']),$page)).')';
+                }
+                if(count($variables)) {
+                    $R->doc .= '&#187; '.implode(', ',array_map(function($from,$to){return hsc($to).' &#8594; '.hsc($from);},array_keys($variables),$variables));
                 }
                 $R->doc .= '&#8250;</span></p>';
                 return true;
