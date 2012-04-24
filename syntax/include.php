@@ -40,7 +40,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
 
     function handle($match, $state, $pos, &$handler) {
         preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
-        $page = $capture[1];
+        $id = $capture[1];
         $vars = $capture[2];
 
         $variables = array();
@@ -55,63 +55,65 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        $template = $this->helper->loadTemplate($page);
-
-        return array($page, $template, $variables);
+        return array($id, $variables);
     }
 
     public function render($mode, &$R, $data) {
-        list($page, $template, $variables) = $data;
+        list($id, $variables) = $data;
 
-        // check for permission
-        if (auth_quickaclcheck($template['source']) < AUTH_READ) {
-            $template['error'] = 'template_unavailable';
+        list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
+
+        // add reference for backlinks
+        if($mode == 'metadata') {
+            $R->meta['relation']['references'][$page] = $exists;
         }
 
-        // are we 'live', and do we have actual instructions?
+        // check for permission
+        if (auth_quickaclcheck($page) < AUTH_READ) {
+            $error = 'template_unavailable';
+        }
+
+        // load the template
+        $template = $this->helper->loadTemplate($page, $hash);
+
+        if($template == null) {
+            $error = 'template_nonexistant';
+        }
+
+        // render errors as messages
         if($this->helper->isDelegating()) {
-            // render errors as messages
-            if(isset($template['error'])) {
+            if(isset($error)) {
                 if($mode == 'xhtml') {
-                    msg(sprintf($this->getLang($template['error']),$page),-1);
+                    msg(sprintf($this->getLang($error),$id),-1);
                     $R->p_open();
                     $R->doc .= '<span class="templatery-error">';
-                    $R->internallink($template['source'],sprintf($this->getLang($template['error']),$page));
+                    $R->internallink($page,sprintf($this->getLang($error),$id));
                     $R->doc .= '</span>';
                     $R->p_close();
                 }
-
-                // abort further rendering
-                return false;
+            } else {
+                // display template
+                $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
+                $this->helper->applyTemplate($template, $handler, $R);
             }
-
-            // display template
-            $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
-            $this->helper->applyTemplate($template, $handler, $R);
-            return true;
         } else {
             // render a preview
             if($mode == 'xhtml') {
                 $R->doc .= '<p class="templatery-include"><span>&#8249;';
-                $R->internallink($template['source'],$page);
-                if(isset($template['error'])) {
-                    $R->doc .= ' ('. $R->_xmlEntities(sprintf($this->getLang($template['error']),$page)).') ';
+                $R->internallink($page,$id);
+                /*
+                if(isset($error)) {
+                    $R->doc .= ' ('. $R->_xmlEntities(sprintf($this->getLang($error),$id)).') ';
                 }
+                */
                 if(count($variables)) {
                     $R->doc .= '&#187; '.implode(', ',array_map(function($from,$to){return hsc($to).' &#8594; '.hsc($from);},array_keys($variables),$variables));
                 }
                 $R->doc .= '&#8250;</span></p>';
-                return true;
-            } elseif($mode == 'metadata') {
-                // render internal link to allow cache and backlinking to work for templates
-                $R->internallink($template['source'],$page);
-                return true;
             }
-
-            return false;
         }
 
-        return false;
+        return true;
     }
 }
 

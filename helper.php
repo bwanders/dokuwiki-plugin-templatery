@@ -14,21 +14,15 @@ if (!defined('DOKU_TAB')) define('DOKU_TAB', "\t");
 if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 class helper_plugin_templatery extends DokuWiki_Plugin {
-    private static $opened = array();
-
-    public function cleanTemplateId($id) {
-        return str_replace(array(':','.'),'',cleanID($id));
-    }
-
     /**
-     * Loads a template.
+     * Resolves a template identifier.
      * 
-     * @param page string the unresolved page id
-     * @param handler object the current handler
-     * @return an array of instructions, or null if the template could not be made available
+     * @param id string the template identifier
+     * @param exists boolean will be set to whether the page existed or not
+     * @return an array containing the resolved page and normalized template id
      */
-    public function loadTemplate($page){
-        list($page, $hash) = explode('#',$page,2);
+    public function resolveTemplate($id, &$exists) {
+        list($page, $hash) = explode('#',$id,2);
         if(empty($hash)) $hash = '';
 
         $hash = $this->cleanTemplateId($hash);
@@ -36,29 +30,34 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         // use configured namespace as resolve base for template finding
         resolve_pageid(cleanID($this->getConf('template_namespace')), $page, $exists);
 
-        $result = array(
-            'source' => $page,
-            'instructions' => null
-        );
+        return array($page, $hash);
+    }
 
-        // check availability
-        if(!$exists) {
-            $result['error'] = 'template_nonexistant';
-            return $result;
-        }
+    /**
+     * Cleans a template identifier.
+     *
+     * @param id string the identifier
+     * @return a cleaned identifier
+     */
+    public function cleanTemplateId($id) {
+        return str_replace(array(':','.'),'',cleanID($id));
+    }
 
-        // check recursion
-        if(in_array($page, self::$opened)) {
-            $result['error'] = 'recursive_templates';
-            return $result;
+    /**
+     * Loads a template.
+     * 
+     * @return an array of instructions, or null if the template could not be made available
+     */
+    public function loadTemplate($page, $hash){
+        if(!page_exists($page,'',false)) {
+            return null;
         }
 
         // load template
-        array_push(self::$opened, $page);
-        $instructions = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
-        array_pop(self::$opened);
+        $instructions = p_cached_instructions(wikiFN($page),$page);
 
-        $template = false;
+        // the result        
+        $template = null;
 
         // now we mangle all instructions to end up with a clean and nestable list of instructions
         $inTemplate = false;
@@ -81,14 +80,8 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             if($inTemplate) $template[]=$ins;
         }
 
-        if($template === false) {
-            $result['error'] = 'template_nonexistant';
-            return $result;
-        }
-
         // return the template, if any
-        $result['instructions'] = $template;
-        return $result;
+        return $template;
     }
 
     private static $delegates = array();
@@ -115,7 +108,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      */
     public function applyTemplate(&$template, &$delegate, &$R) {
         array_push(self::$delegates, $delegate);
-        $R->nest($template['instructions']);
+        $R->nest($template);
         array_pop(self::$delegates);
     }
 
