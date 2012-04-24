@@ -22,7 +22,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
     }
 
     public function getType() {
-        return 'substition';
+        return 'baseonly';
     }
 
     public function getPType() {
