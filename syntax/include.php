@@ -55,7 +55,7 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        $template = $this->helper->loadTemplate($page, $handler);
+        $template = $this->helper->loadTemplate($page);
 
         return array($page, $template, $variables);
     }

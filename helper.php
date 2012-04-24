@@ -27,7 +27,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * @param handler object the current handler
      * @return an array of instructions, or null if the template could not be made available
      */
-    public function loadTemplate($page, &$handler){
+    public function loadTemplate($page){
         list($page, $hash) = explode('#',$page,2);
         if(empty($hash)) $hash = '';
 
