@@ -85,6 +85,11 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             return false;
         }
 
+        // do a metadata render
+        if($mode == 'metadata') {
+            $R->internallink($template['source']);
+        }
+
         // display template
         $handler = new templatery_template_handler($variables);
         $this->helper->applyTemplate($template, $handler, $R);
