@@ -48,7 +48,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * 
      * @return an array of instructions, or null if the template could not be made available
      */
-    public function loadTemplate($page, $hash){
+    public function loadTemplate($page, $hash, $sectioning = array(false)){
         if(!page_exists($page,'',false)) {
             return null;
         }
@@ -56,23 +56,37 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         // load template
         $instructions = p_cached_instructions(wikiFN($page),$page);
 
+        // fetch sectioning data
+        list($section, $level) = $sectioning;
+
         // the result        
         $template = null;
 
         // now we mangle all instructions to end up with a clean and nestable list of instructions
         $inTemplate = false;
+        $closedSection = false;
         for($i=0;$i<count($instructions);$i++) {
             $ins = $instructions[$i];
 
-            // we encounter a @@template@@
+            // we encounter a <template>
             if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER && (empty($hash) || $ins[1][1][1] == $hash)) {
                 $inTemplate = true;
                 $template = array();
                 continue;
             }
 
-            // we encounter a @@/template@@
-            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT && $inTemplate) {
+            // we encounter the first header while we're being included in a section
+            if($inTemplate && $section && !$closedSection && $ins[0]=='plugin' && $ins[1][0]=='templatery_header') {
+                // close the section
+                $template[] = array('section_close',array(),$ins[2]);
+                $closedSection = true;
+            }
+
+            // we encounter a </template>
+            if($inTemplate && $ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
+                if($section && $closedSection) {
+                    $template[] = array('section_open', array($level), $ins[2]);
+                }
                 break;
             }
 

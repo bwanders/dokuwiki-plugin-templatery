@@ -57,11 +57,23 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             }
         }
 
-        return array($id, $variables);
+        // did we include a template into a section?
+        $section = $handler->status['section'];
+        if($section) {
+            // determine the level of the section
+            for($i=count($handler->calls); $i --> 0 ;) {
+                if($handler->calls[$i][0]=='section_open') {
+                    $level = $handler->calls[$i][1][0];
+                    break;
+                }
+            }
+        }
+
+        return array($id, $variables, array($section, $level));
     }
 
     public function render($mode, &$R, $data) {
-        list($id, $variables) = $data;
+        list($id, $variables, $sectioning) = $data;
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
 
@@ -91,7 +103,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
 
         // load the template
-        $template = $this->helper->loadTemplate($page, $hash);
+        $template = $this->helper->loadTemplate($page, $hash, $sectioning);
 
         if($template == null) {
             $error = 'template_nonexistant';
@@ -110,6 +122,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
         } else {
             // display template
             $handler = new templatery_template_handler($variables);
+
             $this->helper->applyTemplate($template, $handler, $R);
         }
 
