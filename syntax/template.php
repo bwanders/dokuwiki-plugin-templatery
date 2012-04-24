@@ -65,15 +65,30 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
 
-        // add reference for backlinks
         if($mode == 'metadata') {
+            // add reference for backlinks
             $R->meta['relation']['references'][$page] = $exists;
+
+            // add page to list for cache handling
+            if(!isset($R->meta['plugin_templatery'])) {
+                $R->meta['plugin_templatery'] = array(
+                    'all'=>array(),
+                    'actual'=>array()
+                );
+            }
+            $R->meta['plugin_templatery']['all'][] = $page;
         }
 
         // check for permission
         if (auth_quickaclcheck($page) < AUTH_READ) {
             $error = 'template_unavailable';
         }
+
+        // add the page to the list of actual pages if it is readable
+        if($mode == 'metadata' && !isset($error)) {
+            $R->meta['plugin_templatery']['actual'][] = $page;
+        }
+
 
         // load the template
         $template = $this->helper->loadTemplate($page, $hash);
