@@ -55,6 +55,21 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
                 if ($handler->status['section']) {
                     $handler->_addCall('section_close',array(),$pos);
                     $handler->status['section'] = false;
+
+                    // did we put the template into a section?
+                    // determine the level of the section
+                    for($i=count($handler->calls); $i --> 0 ;) {
+                        if($handler->calls[$i][0]=='section_open') {
+                            $level = $handler->calls[$i][1][0];
+                            break;
+                        }
+                    }
+
+                    if(isset($level)) {
+                        $this->level = $level;
+                    } else {
+                        unset($this->level);
+                    }
                 }
                 preg_match('/<template([^>\n]*)>/',$match,$capture);
                 return array($state, $this->helper->cleanTemplateId($capture[1]), $capture[1]);
@@ -63,14 +78,24 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
                 $handler->_addCall('cdata', array($match), $pos);
                 return false;
             case DOKU_LEXER_EXIT:
+                // if we were in a section due to the template, close it
                 if ($handler->status['section']) {
                     $handler->_addCall('section_close',array(),$pos);
                     $handler->status['section'] = false;
                 }
-                return array($state);
+
+                $handler->addPluginCall('templatery_wrapper',array($state), $state, $pos, $match);
+
+                // if the template interupted a section, reopen it
+                if(isset($this->level)) {
+                    $handler->_addCall('section_open', array($this->level), $pos);
+                    $handler->status['section'] = true;
+                }
+
+                return false;
         }
 
-        return array();
+        return false;
     }
 
     public function render($mode, &$R, $data) {
