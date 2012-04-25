@@ -98,16 +98,30 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return $template;
     }
 
+    /**
+     * Stack of opened templates.
+     */
     private static $templates = array();
 
+    /**
+     * Pushes a new template onto the stack.
+     */
     public function pushTemplate($page, $hash) {
         array_push(self::$templates, "$page#$hash");
     }
 
+    /**
+     * Pops a template from the stack.
+     */
     public function popTemplate() {
         array_pop(self::$templates);
     }
 
+    /**
+     * Checks whether the given template can be opened. This
+     * takes into account the maximum recursion depth, and
+     * allows for self-recursive templates.
+     */
     public function isTemplateAllowed($page, $hash) {
         // determine maximum value
         $max = intval($this->getConf('maximum_nesting'));
