@@ -37,10 +37,11 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
     /**
      * Renders the actual template.
      */
-    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, $error) {
+    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, &$sectioning, $error) {
         // render errors as messages
         if($this->helper->isDelegating()) {
-            parent::internalRender($mode, $R, $template, $id, $page, $hash, $variables, $error);
+            $noSectioning = array(false);
+            parent::internalRender($mode, $R, $template, $id, $page, $hash, $variables, $noSectioning, $error);
         } else {
             // render a preview
             if($mode == 'xhtml') {

@@ -39,8 +39,6 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
     }
 
     public function handle($match, $state, $pos, &$handler){
-        global $ID;
-
         preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
         $id = $capture[1];
         $vars = $capture[2];
@@ -109,7 +107,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             $error = 'template_nonexistant';
         }
 
-        $this->internalRender($mode, &$R, $template, $id, $page, $hash, $variables, $error);
+        $this->internalRender($mode, &$R, $template, $id, $page, $hash, $variables, $sectioning, $error);
 
         return true;
     }
@@ -117,7 +115,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
     /**
      * Renders the actual template.
      */
-    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, $error) {
+    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, &$sectioning, $error) {
         if(!isset($error) && !$this->helper->isTemplateAllowed($page, $hash)) {
             $error = 'recursive_templates';
         }
@@ -137,7 +135,10 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             $handler = $this->newHandler($mode, $R, $template, $id, $page, $hash, $variables);
 
             $this->helper->pushTemplate($page, $hash);
+            list($section, $level) = $sectioning;
+            if($section) $this->helper->pushSection($level);
             $this->helper->applyTemplate($template, $handler, $R);
+            if($section) $this->helper->popSection();
             $this->helper->popTemplate();
         }
 

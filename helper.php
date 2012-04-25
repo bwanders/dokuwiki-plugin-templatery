@@ -76,22 +76,28 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             }
 
             // we encounter the first header while we're being included in a section
-            if($inTemplate && $section && !$closedSection && $ins[0]=='plugin' && $ins[1][0]=='templatery_header') {
+            if($inTemplate && !$closedSection && $ins[0]=='plugin' && $ins[1][0]=='templatery_header') {
                 // close the section
-                $template[] = array('section_close',array(),$ins[2]);
+                $template[] = array('plugin',array('templatery_section',array('conditional_close'),0,''),$ins[2]);
                 $closedSection = true;
             }
 
             // we encounter a </template>
             if($inTemplate && $ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
-                if($section && $closedSection) {
-                    $template[] = array('section_open', array($level), $ins[2]);
+                if($closedSection) {
+                    $template[] = array('plugin',array('templatery_section',array('conditional_open'),0,''),$ins[2]);
                 }
                 break;
             }
 
             // all other instructions
-            if($inTemplate) $template[]=$ins;
+            if($inTemplate) {
+                switch($ins[0]) {
+                    case 'section_open': $template[] = array('plugin',array('templatery_section',array('open',$ins[1][0]),0,''),$ins[2]); break;
+                    case 'section_close': $template[] = array('plugin',array('templatery_section',array('close'),0,''),$ins[2]); break;
+                    default: $template[] = $ins; break;
+                }
+            }
         }
 
         // return the template, if any
@@ -130,6 +136,9 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return count(self::$templates) < $max;
     }
 
+    /**
+     * The stack of value delegates.
+     */
     private static $delegates = array();
 
     /**
@@ -138,7 +147,10 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     public function isDelegating() {
         return count(self::$delegates) > 0;
     }
-
+    
+    /**
+     * Gets the idx'th stack delegate from stack top.
+     */
     public function getDelegate($idx=0) {
         $idx = count(self::$delegates)-1-$idx;
 
@@ -177,6 +189,33 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      */
     public function displayField($mode, &$R, $field, $default) {
         return $this->getDelegate()->displayField($mode, $R, $field, $default);
+    }
+
+    /**
+     * The section stack. This stack is used for the
+     * on the fly fixing of sections within templates.
+     */
+    private static $sections = array();
+
+    /**
+     * Pushes a section onto the stack.
+     */
+    public function pushSection($level) {
+        array_push(self::$sections,$level);
+    }
+
+    /**
+     * Pops a section from the stack.
+     */
+    public function popSection() {
+        array_pop(self::$sections);
+    }
+
+    /**
+     * Peeks at the current top section.
+     */
+    public function peekSection() {
+        return end(self::$sections);
     }
 }
 
