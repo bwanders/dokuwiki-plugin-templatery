@@ -16,9 +16,9 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once DOKU_PLUGIN.'syntax.php';
 require_once DOKU_PLUGIN.'templatery/templatery_handler.php';
 
-class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
+class syntax_plugin_templatery_include extends syntax_plugin_templatery_template {
     function __construct() {
-        $this->helper =& plugin_load('helper','templatery');
+        parent::__construct();
     }
 
     function getType() {
@@ -30,98 +30,17 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
         return 290;
     }
 
-    function getPType() {
-        return 'block';
-    }
-
     function connectTo($mode) {
         $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_include');
     }
 
-    function handle($match, $state, $pos, &$handler) {
-        preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
-        $id = $capture[1];
-        $vars = $capture[2];
-
-        $variables = array();
-        $vars = explode('|', $vars);
-        $j = 0;
-        for($i=0;$i<count($vars);$i++) {
-            if(trim($vars[$i])=='') continue;
-            if(preg_match('/^(.+?)=(.+)$/',$vars[$i],$capture)) {
-                $variables[$capture[1]] = $capture[2];
-            } else {
-                $variables[$j++] = $vars[$i];
-            }
-        }
-
-        // did we include a template into a section?
-        $section = $handler->status['section'];
-        if($section) {
-            // determine the level of the section
-            for($i=count($handler->calls); $i --> 0 ;) {
-                if($handler->calls[$i][0]=='section_open') {
-                    $level = $handler->calls[$i][1][0];
-                    break;
-                }
-            }
-        }
-
-        return array($id, $variables, array($section, $level));
-    }
-
-    public function render($mode, &$R, $data) {
-        list($id, $variables, $sectioning) = $data;
-
-        list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
-
-        if($mode == 'metadata') {
-            // add reference for backlinks
-            $R->meta['relation']['references'][$page] = $exists;
-
-            // add page to list for cache handling
-            if(!isset($R->meta['plugin_templatery'])) {
-                $R->meta['plugin_templatery'] = array(
-                    'all'=>array(),
-                    'actual'=>array()
-                );
-            }
-            $R->meta['plugin_templatery']['all'][] = $page;
-        }
-
-        // check for permission
-        if (auth_quickaclcheck($page) < AUTH_READ) {
-            $error = 'template_unavailable';
-        }
-
-        // add the page to the list of actual pages if it is readable
-        if($mode == 'metadata' && !isset($error)) {
-            $R->meta['plugin_templatery']['actual'][] = $page;
-        }
-
-        // load the template
-        $template = $this->helper->loadTemplate($page, $hash, $sectioning);
-
-        if($template == null) {
-            $error = 'template_nonexistant';
-        }
-
+    /**
+     * Renders the actual template.
+     */
+    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, $error) {
         // render errors as messages
         if($this->helper->isDelegating()) {
-            if(isset($error)) {
-                if($mode == 'xhtml') {
-                    msg(sprintf($this->getLang($error),$id),-1);
-                    $R->p_open();
-                    $R->doc .= '<span class="templatery-error">';
-                    $R->internallink($page,sprintf($this->getLang($error),$id));
-                    $R->doc .= '</span>';
-                    $R->p_close();
-                }
-            } else {
-                // display template
-                $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
-                $this->helper->applyTemplate($template, $handler, $R);
-            }
+            parent::internalRender($mode, $R, $template, $id, $page, $hash, $variables, $error);
         } else {
             // render a preview
             if($mode == 'xhtml') {
@@ -138,8 +57,13 @@ class syntax_plugin_templatery_include extends DokuWiki_Syntax_Plugin {
                 $R->doc .= '&#8250;</span></p>';
             }
         }
+    }
 
-        return true;
+    /**
+     * Instantiates a new handler.
+     */
+    protected function newHandler($mode, &$R, &$template, $id, $page, $hash, &$variables) {
+        return new templatery_include_handler($variables, $this->helper->getDelegate());
     }
 }
 

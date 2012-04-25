@@ -109,6 +109,15 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             $error = 'template_nonexistant';
         }
 
+        $this->internalRender($mode, &$R, $template, $id, $page, $hash, $variables, $error);
+
+        return true;
+    }
+
+    /**
+     * Renders the actual template.
+     */
+    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, $error) {
         // render errors as messages
         if(isset($error)) {
             if($mode == 'xhtml') {
@@ -121,12 +130,18 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             }
         } else {
             // display template
-            $handler = new templatery_template_handler($variables);
+            $handler = $this->newHandler($mode, $R, $template, $id, $page, $hash, $variables);
 
             $this->helper->applyTemplate($template, $handler, $R);
         }
 
-        return true;
+    }
+
+    /**
+     * Instantiates a new handler.
+     */
+    protected function newHandler($mode, &$R, &$template, $id, $page, $hash, &$variables) {
+        return new templatery_template_handler($variables);
     }
 }
 
