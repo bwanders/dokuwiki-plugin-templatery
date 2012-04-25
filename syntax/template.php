@@ -118,6 +118,10 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
      * Renders the actual template.
      */
     protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, $error) {
+        if(!isset($error) && !$this->helper->isTemplateAllowed($page, $hash)) {
+            $error = 'recursive_templates';
+        }
+
         // render errors as messages
         if(isset($error)) {
             if($mode == 'xhtml') {
@@ -132,7 +136,9 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
             // display template
             $handler = $this->newHandler($mode, $R, $template, $id, $page, $hash, $variables);
 
+            $this->helper->pushTemplate($page, $hash);
             $this->helper->applyTemplate($template, $handler, $R);
+            $this->helper->popTemplate();
         }
 
     }

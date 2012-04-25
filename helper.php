@@ -98,6 +98,24 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return $template;
     }
 
+    private static $templates = array();
+
+    public function pushTemplate($page, $hash) {
+        array_push(self::$templates, "$page#$hash");
+    }
+
+    public function popTemplate() {
+        array_pop(self::$templates);
+    }
+
+    public function isTemplateAllowed($page, $hash) {
+        // determine maximum value
+        $max = intval($this->getConf('maximum_nesting'));
+
+        // check depth of current nesting
+        return count(self::$templates) < $max;
+    }
+
     private static $delegates = array();
 
     /**
