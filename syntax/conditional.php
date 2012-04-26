@@ -21,7 +21,7 @@ class syntax_plugin_templatery_conditional extends DokuWiki_Syntax_Plugin {
     }
 
     public function getType() {
-        return 'container';
+        return 'baseonly';
     }
 
     public function getPType() {
