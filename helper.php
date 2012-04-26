@@ -98,29 +98,6 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
 
                     case 'section_close': $template[] = array('plugin',array('templatery_section',array('close'),0,''),$ins[2]); break;
 
-                    // replace conditional with nested version
-                    case 'plugin': switch($ins[1][0]) {
-                        case 'templatery_conditional':
-                            // store variable to determine  on
-                            $variable = $ins[1][1][2];
-                            $negation = $ins[1][1][1];
-
-                            // nest the list of instructions
-                            $nested = array();
-                            $i++;
-                            while(!($instructions[$i][0] == 'plugin' && $instructions[$i][1][0] == 'templatery_conditional')) {
-                                $nested[] = $instructions[$i];
-                                $i++;
-                            }
-
-                            // add a conditional instruction with nested list
-                            $template[] = array('plugin', array('templatery_conditional',array('conditional', $negation, $variable, $nested),0,''),$instruction[$i][2]);
-                            break;
-
-                        default: $template[] = $ins; break;
-                    }
-                    break;
-
                     // any other instruction goes straight into the list
                     default: $template[] = $ins; break;
                 }
