@@ -59,7 +59,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         // fetch sectioning data
         list($section, $level) = $sectioning;
 
-        // the result        
+        // the result
         $template = null;
 
         // now we mangle all instructions to end up with a clean and nestable list of instructions
@@ -93,8 +93,35 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             // all other instructions
             if($inTemplate) {
                 switch($ins[0]) {
+                    // replace section_close and section_open with templatery-aware versions
                     case 'section_open': $template[] = array('plugin',array('templatery_section',array('open',$ins[1][0]),0,''),$ins[2]); break;
+
                     case 'section_close': $template[] = array('plugin',array('templatery_section',array('close'),0,''),$ins[2]); break;
+
+                    // replace conditional with nested version
+                    case 'plugin': switch($ins[1][0]) {
+                        case 'templatery_conditional':
+                            // store variable to determine  on
+                            $variable = $ins[1][1][2];
+                            $negation = $ins[1][1][1];
+
+                            // nest the list of instructions
+                            $nested = array();
+                            $i++;
+                            while(!($instructions[$i][0] == 'plugin' && $instructions[$i][1][0] == 'templatery_conditional')) {
+                                $nested[] = $instructions[$i];
+                                $i++;
+                            }
+
+                            // add a conditional instruction with nested list
+                            $template[] = array('plugin', array('templatery_conditional',array('conditional', $negation, $variable, $nested),0,''),$instruction[$i][2]);
+                            break;
+
+                        default: $template[] = $ins; break;
+                    }
+                    break;
+
+                    // any other instruction goes straight into the list
                     default: $template[] = $ins; break;
                 }
             }
