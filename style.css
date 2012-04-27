@@ -1,24 +1,8 @@
-.templatery-field,
-.templatery-include span {
-    border-radius: 0.2em;
-    padding-left: 0.2em;
-    padding-right:0.2em;
-}
-
-.templatery-field {
-    background-color: #ddf;
-}
-
-.templatery-include span {
-    background-color: #dfd;
-}
-
-
 .templatery-wrapper {
     margin: 0 0 1.0em 0;
-    background-color: #eee;
-    border-bottom:1px dotted silver;
-    border-top:1px dotted silver;
+    background-color: __background_neu__;
+    border-bottom:1px dotted __border__;
+    border-top:1px dotted __border__;
 }
 .templatery-wrapper-header {
     font-size: 80%;
@@ -26,21 +10,31 @@
 }
 .templatery-wrapper-label {
     padding-right: 0.2em;
-    color: silver;
+    color: __border__;
     float: right;
+}
+
+
+.templatery-field,
+.templatery-include span {
+    border-radius: 0.2em;
+    padding-left: 0.2em;
+    padding-right:0.2em;
+    color: black;
+}
+.templatery-field {
+    background-color: #ddf;
+}
+.templatery-include span {
+    background-color: #dfd;
 }
 
 
 .templatery-conditional {
     margin-left: -4px;
     padding-left: 2px;
-}
-
-.templatery-conditional {
     border-left: 2px solid #faa;
 }
-
-
 .templatery-conditional .templatery-if {
     font-size: 80%;
     padding-left: 2px;
@@ -48,10 +42,8 @@
     padding-right: 2px;
     border-top-right-radius: 0.2em;
     border-bottom-right-radius: 0.2em;
-}
-
-.templatery-conditional .templatery-if {
     background-color: #faa;
+    color: black;
 }
 
 
