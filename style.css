@@ -9,6 +9,11 @@
     background-color: #ddf;
 }
 
+.templatery-include span {
+    background-color: #dfd;
+}
+
+
 .templatery-wrapper {
     margin: 0 0 1.0em 0;
     background-color: #eee;
@@ -16,15 +21,19 @@
     border-top:1px dotted silver;
 }
 
+
 .templatery-conditional {
     margin-left: -4px;
     padding-left: 2px;
+}
+
+.templatery-conditional {
     border-left: 2px solid #faa;
 }
 
+
 .templatery-conditional .templatery-if {
     font-size: 80%;
-    background-color: #faa;
     padding-left: 2px;
     margin-left: -2px;
     padding-right: 2px;
@@ -32,9 +41,10 @@
     border-bottom-right-radius: 0.2em;
 }
 
-.templatery-include span {
-    background-color: #dfd;
+.templatery-conditional .templatery-if {
+    background-color: #faa;
 }
+
 
 .templatery-error {
     background-image: url(../../images/error.png);
