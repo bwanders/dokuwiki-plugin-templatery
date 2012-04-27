@@ -101,7 +101,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
 
         // load the template
-        $template = $this->helper->loadTemplate($page, $hash, $sectioning);
+        $template = $this->helper->loadTemplate($page, $hash);
 
         if($template == null) {
             $error = 'template_nonexistant';

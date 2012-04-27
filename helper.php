@@ -48,16 +48,13 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * 
      * @return an array of instructions, or null if the template could not be made available
      */
-    public function loadTemplate($page, $hash, $sectioning = array(false)){
+    public function loadTemplate($page, $hash) {
         if(!page_exists($page,'',false)) {
             return null;
         }
 
         // load template (reparse to get weird plugins that use e.g. $ID working)
         $instructions = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
-
-        // fetch sectioning data
-        list($section, $level) = $sectioning;
 
         // the result
         $template = null;
