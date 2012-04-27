@@ -34,37 +34,30 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
         $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_include');
     }
 
-    /**
-     * Renders the actual template.
-     */
-    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, &$sectioning, $error) {
-        // render errors as messages
+    public function render($mode, &$R, $data) {
+        list($id, $variables, $sectioning) = $data;
+
+        list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
+
+        $template = $this->helper->prepareTemplate($mode, $R, $page, $hash, $error);
+        
         if($this->helper->isDelegating()) {
-            $noSectioning = array(false);
-            parent::internalRender($mode, $R, $template, $id, $page, $hash, $variables, $noSectioning, $error);
+            $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
+
+            $this->helper->renderTemplate($mode, $R, $template, $id, $page, $hash, array(false), $handler, $error);
         } else {
             // render a preview
             if($mode == 'xhtml') {
                 $R->doc .= '<p class="templatery-include"><span>&#8249;';
                 $R->internallink($page,$id);
-                /*
-                if(isset($error)) {
-                    $R->doc .= ' ('. $R->_xmlEntities(sprintf($this->getLang($error),$id)).') ';
-                }
-                */
                 if(count($variables)) {
                     $R->doc .= '&#187; '.implode(', ',array_map(function($from,$to){return hsc($to).' &#8594; '.hsc($from);},array_keys($variables),$variables));
                 }
                 $R->doc .= '&#8250;</span></p>';
             }
         }
-    }
 
-    /**
-     * Instantiates a new handler.
-     */
-    protected function newHandler($mode, &$R, &$template, $id, $page, $hash, &$variables) {
-        return new templatery_include_handler($variables, $this->helper->getDelegate());
+        return true;
     }
 }
 

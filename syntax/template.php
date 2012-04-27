@@ -56,18 +56,9 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
         }
 
         // did we include a template into a section?
-        $section = $handler->status['section'];
-        if($section) {
-            // determine the level of the section
-            for($i=count($handler->calls); $i --> 0 ;) {
-                if($handler->calls[$i][0]=='section_open') {
-                    $level = $handler->calls[$i][1][0];
-                    break;
-                }
-            }
-        }
+        $sectioning = $this->helper->getSectioning($handler);
 
-        return array($id, $variables, array($section, $level));
+        return array($id, $variables, $sectioning);
     }
 
     public function render($mode, &$R, $data) {
@@ -75,80 +66,13 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
 
-        if($mode == 'metadata') {
-            // add reference for backlinks
-            $R->meta['relation']['references'][$page] = $exists;
+        $template = $this->helper->prepareTemplate($mode, $R, $page, $hash, $error);
+        
+        $handler = new templatery_template_handler($variables);
 
-            // add page to list for cache handling
-            if(!isset($R->meta['plugin_templatery'])) {
-                $R->meta['plugin_templatery'] = array(
-                    'all'=>array(),
-                    'actual'=>array()
-                );
-            }
-            $R->meta['plugin_templatery']['all'][] = $page;
-        }
-
-        // check for permission
-        if (auth_quickaclcheck($page) < AUTH_READ) {
-            $error = 'template_unavailable';
-        }
-
-        // add the page to the list of actual pages if it is readable
-        if($mode == 'metadata' && !isset($error)) {
-            $R->meta['plugin_templatery']['actual'][] = $page;
-        }
-
-
-        // load the template
-        $template = $this->helper->loadTemplate($page, $hash);
-
-        if($template == null) {
-            $error = 'template_nonexistant';
-        }
-
-        $this->internalRender($mode, &$R, $template, $id, $page, $hash, $variables, $sectioning, $error);
+        $this->helper->renderTemplate($mode, $R, $template, $id, $page, $hash, $sectioning, $handler, $error);
 
         return true;
-    }
-
-    /**
-     * Renders the actual template.
-     */
-    protected function internalRender($mode, &$R, &$template, $id, $page, $hash, &$variables, &$sectioning, $error) {
-        if(!isset($error) && !$this->helper->isTemplateAllowed($page, $hash)) {
-            $error = 'recursive_templates';
-        }
-
-        // render errors as messages
-        if(isset($error)) {
-            if($mode == 'xhtml') {
-                msg(sprintf($this->getLang($error),$id),-1);
-                $R->p_open();
-                $R->doc .= '<span class="templatery-error">';
-                $R->internallink($page,sprintf($this->getLang($error),$id));
-                $R->doc .= '</span>';
-                $R->p_close();
-            }
-        } else {
-            // display template
-            $handler = $this->newHandler($mode, $R, $template, $id, $page, $hash, $variables);
-
-            $this->helper->pushTemplate($page, $hash);
-            list($section, $level) = $sectioning;
-            if($section) $this->helper->pushSection($level);
-            $this->helper->applyTemplate($template, $handler, $R);
-            if($section) $this->helper->popSection();
-            $this->helper->popTemplate();
-        }
-
-    }
-
-    /**
-     * Instantiates a new handler.
-     */
-    protected function newHandler($mode, &$R, &$template, $id, $page, $hash, &$variables) {
-        return new templatery_template_handler($variables);
     }
 }
 

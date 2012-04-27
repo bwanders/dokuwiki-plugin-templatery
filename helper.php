@@ -44,6 +44,61 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     }
 
     /**
+     * Determines the current sectioning information.
+     */
+    public function getSectioning(&$handler) {
+        $section = $handler->status['section'];
+        if($section) {
+            // determine the level of the section
+            for($i=count($handler->calls); $i --> 0 ;) {
+                if($handler->calls[$i][0]=='section_open') {
+                    $level = $handler->calls[$i][1][0];
+                    break;
+                }
+            }
+        }
+
+        return array($section, $level);
+    }
+
+    public function prepareTemplate($mode, &$R, $page, $hash, &$error) {
+        if($mode == 'metadata') {
+            // add reference for backlinks
+            $R->meta['relation']['references'][$page] = $exists;
+
+            // add page to list for cache handling
+            if(!isset($R->meta['plugin_templatery'])) {
+                $R->meta['plugin_templatery'] = array(
+                    'all'=>array(),
+                    'actual'=>array()
+                );
+            }
+            $R->meta['plugin_templatery']['all'][] = $page;
+        }
+
+        // check for permission
+        if (auth_quickaclcheck($page) < AUTH_READ) {
+            $error = 'template_unavailable';
+        }
+
+        // add the page to the list of actual pages if it is readable
+        if($mode == 'metadata' && !isset($error)) {
+            $R->meta['plugin_templatery']['actual'][] = $page;
+        }
+
+        // load the template
+        if(!isset($error)) {
+            $template = $this->loadTemplate($page, $hash);
+            if($template == null) {
+                $error = 'template_nonexistant';
+            }
+        }
+
+        return $template;
+    }
+
+
+    /**
      * Loads a template.
      * 
      * @return an array of instructions, or null if the template could not be made available
@@ -156,6 +211,35 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         $idx = count(self::$delegates)-1-$idx;
 
         return isset(self::$delegates[$idx]) ? self::$delegates[$idx] : null;
+    }
+
+    /**
+     * Renders a template.
+     */
+    public function renderTemplate($mode, &$R, &$template, $id, $page, $hash, $sectioning, &$handler, &$error) {
+        if(!isset($error) && !$this->isTemplateAllowed($page, $hash)) {
+            $error = 'recursive_templates';
+        }
+
+        // render errors as messages
+        if(isset($error)) {
+            if($mode == 'xhtml') {
+                msg(sprintf($this->getLang($error),$id),-1);
+                $R->p_open();
+                $R->doc .= '<span class="templatery-error">';
+                $R->internallink($page,sprintf($this->getLang($error),$id));
+                $R->doc .= '</span>';
+                $R->p_close();
+            }
+        } else {
+            // display template
+            $this->pushTemplate($page, $hash);
+            list($section, $level) = $sectioning;
+            if($section) $this->pushSection($level);
+            $this->applyTemplate($template, $handler, $R);
+            if($section) $this->popSection();
+            $this->popTemplate();
+        }
     }
 
     /**
