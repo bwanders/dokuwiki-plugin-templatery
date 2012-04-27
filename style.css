@@ -20,6 +20,15 @@
     border-bottom:1px dotted silver;
     border-top:1px dotted silver;
 }
+.templatery-wrapper-header {
+    font-size: 80%;
+    min-height: 1.0em;
+}
+.templatery-wrapper-label {
+    padding-right: 0.2em;
+    color: silver;
+    float: right;
+}
 
 
 .templatery-conditional {
