@@ -53,8 +53,8 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             return null;
         }
 
-        // load template
-        $instructions = p_cached_instructions(wikiFN($page),$page);
+        // load template (reparse to get weird plugins that use e.g. $ID working)
+        $instructions = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
 
         // fetch sectioning data
         list($section, $level) = $sectioning;
