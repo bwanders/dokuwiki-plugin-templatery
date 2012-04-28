@@ -15,6 +15,10 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
+/**
+ * Replacement header to ensure compatibility when
+ * mucking around sections, also fixes the TOC.
+ */
 class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
     function __construct() {
         $this->helper =& plugin_load('helper','templatery');
@@ -78,6 +82,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
     function render($mode, &$R, $data) {
         list($text,$level,$instructions) = $data;
 
+        // convert all instructions to text
         if($this->helper->isDelegating()) {
             $text = '';
             foreach($instructions as $ins) {
@@ -93,6 +98,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
             }
         }
 
+        // render the header to XHTML
         if ($mode == 'xhtml') {
         
             if(!$text) return;

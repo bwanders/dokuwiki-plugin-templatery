@@ -61,6 +61,17 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return array($section, $level);
     }
 
+    /**
+     * Prepares a template for rendering. This takes care of metadata
+     * renering as well.
+     * 
+     * @param mode string the rendering mode
+     * @param R object the renderer
+     * @param page string the page id of the template to prepare
+     * @param hash string the template name
+     * @param error string an error string to return
+     * @return the prepared template.
+     */
     public function prepareTemplate($mode, &$R, $page, $hash, &$error) {
         if($mode == 'metadata') {
             // add reference for backlinks

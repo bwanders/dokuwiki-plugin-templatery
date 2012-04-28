@@ -1,6 +1,6 @@
 <?php
 /**
- * DokuWiki Plugin skeleton (Syntax Component)
+ * DokuWiki Plugin Templatery (Syntax Component)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  Brend Wanders <b.wanders@utwente.nl>
@@ -15,6 +15,9 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
+/**
+ * The block conditional.
+ */
 class syntax_plugin_templatery_conditional extends DokuWiki_Syntax_Plugin {
     public function __construct() {
         $this->helper =& plugin_load('helper', 'templatery');

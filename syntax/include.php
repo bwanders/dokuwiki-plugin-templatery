@@ -1,6 +1,6 @@
 <?php
 /**
- * DokuWiki Plugin templatery (Fake header)
+ * DokuWiki Plugin Templatery (Fake header)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  Brend Wanders <b.wanders@utwente.nl>
@@ -16,6 +16,9 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once DOKU_PLUGIN.'syntax.php';
 require_once DOKU_PLUGIN.'templatery/templatery_handler.php';
 
+/**
+ * Handles template inclusion in a template.
+ */
 class syntax_plugin_templatery_include extends syntax_plugin_templatery_template {
     function __construct() {
         parent::__construct();
@@ -39,8 +42,10 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
 
+        // prepare template for rendering
         $template = $this->helper->prepareTemplate($mode, $R, $page, $hash, $error);
         
+        // check that we're not previewing
         if($this->helper->isDelegating()) {
             $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
 

@@ -15,6 +15,9 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
+/**
+ * Replacement for the normal sections.
+ */
 class syntax_plugin_templatery_section extends DokuWiki_Syntax_Plugin {
     public function __construct() {
         $this->helper =& plugin_load('helper','templatery');

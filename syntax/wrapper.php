@@ -15,6 +15,9 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'syntax.php';
 
+/**
+ * The template wrapper for defining templates.
+ */
 class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
     public function __construct() {
         $this->helper =& plugin_load('helper', 'templatery');
@@ -52,6 +55,7 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
     public function handle($match, $state, $pos, &$handler){
         switch($state) {
             case DOKU_LEXER_ENTER:
+                // close section and store the level of the section we just closed
                 if ($handler->status['section']) {
                     $handler->_addCall('section_close',array(),$pos);
                     $handler->status['section'] = false;
@@ -71,12 +75,18 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
                         unset($this->level);
                     }
                 }
+
+                // grab the name
                 preg_match('/<template([^>\n]*)>/',$match,$capture);
+
+                // output an instruction
                 return array($state, $this->helper->cleanTemplateId($capture[1]), $capture[1]);
+
             case DOKU_LEXER_UNMATCHED:
                 // we don't care about unmatched things; just get them rendered
                 $handler->_addCall('cdata', array($match), $pos);
                 return false;
+
             case DOKU_LEXER_EXIT:
                 // if we were in a section due to the template, close it
                 if ($handler->status['section']) {
@@ -103,10 +113,13 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
 
         switch($data[0]) {
             case DOKU_LEXER_ENTER:
+                // output wrapper div and label
                 $R->doc .= '<div class="templatery-wrapper">';
                 $R->doc .= '<div class="templatery-wrapper-header"><span class="templatery-wrapper-label">'.$R->_xmlEntities($data[2]).'</span></div>';
                 $R->doc .= '<div class="clearer"></div>';
                 break;
+
+            // close div
             case DOKU_LEXER_EXIT:
                 $R->doc .= '<div class="clearer"></div></div>';
                 break;

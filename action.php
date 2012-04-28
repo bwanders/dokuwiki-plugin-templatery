@@ -1,6 +1,6 @@
 <?php
 /**
- * DokuWiki Plugin templatery (Action Component)
+ * DokuWiki Plugin Templatery (Action Component)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  Brend Wanders <b.wanders@utwente.nl>
@@ -15,6 +15,9 @@ if (!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 
 require_once DOKU_PLUGIN.'action.php';
 
+/**
+ * This plugin takes care of the cache check.
+ */
 class action_plugin_templatery extends DokuWiki_Action_Plugin {
 
     public function register(Doku_Event_Handler &$controller) {

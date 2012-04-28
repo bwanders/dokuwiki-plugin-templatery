@@ -1,6 +1,6 @@
 <?php
 /**
- * DokuWiki Plugin templatery (Delegate interface)
+ * DokuWiki Plugin Templatery (Delegate interface)
  *
  * @license GPL 2 http://www.gnu.org/licenses/gpl-2.0.html
  * @author  Brend Wanders <b.wanders@utwente.nl>
