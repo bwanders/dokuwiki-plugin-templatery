@@ -108,6 +108,15 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return $template;
     }
 
+    /**
+     * Cross-instance cache.
+     *
+     * This cache will contain instructions and parsed templates in the following structure:
+     *  [$ID]
+     *       ['instructions'][$page] = parsed instructions for this page (so no double parse)
+     *       ['templates']["$page#$hash"] = parsed template for this key
+     */
+    static $cache = array();
 
     /**
      * Loads a template.
@@ -115,60 +124,77 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * @return an array of instructions, or null if the template could not be made available
      */
     public function loadTemplate($page, $hash) {
+        global $ID;
+
         if(!page_exists($page,'',false)) {
             return null;
         }
 
         // load template (reparse to get weird plugins that use e.g. $ID working)
-        $instructions = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
+        // set up cache to prevent reparsing a page with multiple templates on it
+        if(!isset(self::$cache[$ID]['instructions'])) {
+            self::$cache[$ID]['instructions'] = array();
+            self::$cache[$ID]['templates'] = array();
+        }
+        if(!isset(self::$cache[$ID]['instructions'][$page])) {
+            self::$cache[$ID]['instructions'][$page] = p_get_instructions(io_readWikiPage(wikiFN($page),$page));
+        }
 
-        // the result
-        $template = null;
+        $instructions =& self::$cache[$ID]['instructions'][$page];
+
+        $cacheKey = "$page#";
+        if(!empty($hash)) $cacheKey .= $hash;
 
         // now we mangle all instructions to end up with a clean and nestable list of instructions
-        $inTemplate = false;
-        $closedSection = false;
-        for($i=0;$i<count($instructions);$i++) {
-            $ins = $instructions[$i];
+        if(!isset(self::$cache[$ID]['templates'][$cacheKey])) {
+            self::$cache[$ID]['templates'][$cacheKey] = array();
+            // the result
+            $template =& self::$cache[$ID]['templates'][$cacheKey];
 
-            // we encounter a <template>
-            if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER && (empty($hash) || $ins[1][1][1] == $hash)) {
-                $inTemplate = true;
-                $template = array();
-                continue;
-            }
-
-            // we encounter the first header while we're being included in a section
-            if($inTemplate && !$closedSection && $ins[0]=='plugin' && $ins[1][0]=='templatery_header') {
-                // close the section
-                $template[] = array('plugin',array('templatery_section',array('conditional_close'),0,''),$ins[2]);
-                $closedSection = true;
-            }
-
-            // we encounter a </template>
-            if($inTemplate && $ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
-                if($closedSection) {
-                    $template[] = array('plugin',array('templatery_section',array('conditional_open'),0,''),$ins[2]);
+            $inTemplate = false;
+            $closedSection = false;
+            for($i=0;$i<count($instructions);$i++) {
+                $ins = $instructions[$i];
+    
+                // we encounter a <template>
+                if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER && (empty($hash) || $ins[1][1][1] == $hash)) {
+                    $inTemplate = true;
+                    $template = array();
+                    continue;
                 }
-                break;
-            }
-
-            // all other instructions
-            if($inTemplate) {
-                switch($ins[0]) {
-                    // replace section_close and section_open with templatery-aware versions
-                    case 'section_open': $template[] = array('plugin',array('templatery_section',array('open',$ins[1][0]),0,''),$ins[2]); break;
-
-                    case 'section_close': $template[] = array('plugin',array('templatery_section',array('close'),0,''),$ins[2]); break;
-
-                    // any other instruction goes straight into the list
-                    default: $template[] = $ins; break;
+    
+                // we encounter the first header while we're being included in a section
+                if($inTemplate && !$closedSection && $ins[0]=='plugin' && $ins[1][0]=='templatery_header') {
+                    // close the section
+                    $template[] = array('plugin',array('templatery_section',array('conditional_close'),0,''),$ins[2]);
+                    $closedSection = true;
+                }
+    
+                // we encounter a </template>
+                if($inTemplate && $ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
+                    if($closedSection) {
+                        $template[] = array('plugin',array('templatery_section',array('conditional_open'),0,''),$ins[2]);
+                    }
+                    break;
+                }
+    
+                // all other instructions
+                if($inTemplate) {
+                    switch($ins[0]) {
+                        // replace section_close and section_open with templatery-aware versions
+                        case 'section_open': $template[] = array('plugin',array('templatery_section',array('open',$ins[1][0]),0,''),$ins[2]); break;
+    
+                        case 'section_close': $template[] = array('plugin',array('templatery_section',array('close'),0,''),$ins[2]); break;
+    
+                        // any other instruction goes straight into the list
+                        default: $template[] = $ins; break;
+                    }
                 }
             }
         }
 
         // return the template, if any
-        return $template;
+        return self::$cache[$ID]['templates'][$cacheKey];
     }
 
     /**
