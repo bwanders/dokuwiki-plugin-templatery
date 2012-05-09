@@ -9,6 +9,8 @@
 // must be run within Dokuwiki
 if (!defined('DOKU_INC')) die('Meh.');
 
+require_once DOKU_PLUGIN.'templatery/templatery_handler.php';
+
 /**
  * This plugin takes care of the cache check.
  */
