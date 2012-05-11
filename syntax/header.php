@@ -126,11 +126,11 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
                         if($this->helper->isDelegating()) {
                             $this->helper->displayField($mode, $R, $ins[1], $ins[2]);
                         } else {
-                            $R->doc .= '<span class="templatery-field">&#8249;'.$R->_xmlEntities($text);
+                            $R->doc .= '<span class="templatery-field">'.$R->_xmlEntities($text);
                             if($ins[2]) {
-                                $R->doc .= '&#187;'.$R->_xmlEntities($ins[2]);
+                                $R->doc .= '<span class="marker separator">&#187;</span>'.$R->_xmlEntities($ins[2]);
                             }
-                            $R->doc .= '&#8250;</span>';
+                            $R->doc .= '</span>';
                         }
                         break;
                 }

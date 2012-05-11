@@ -17,13 +17,25 @@
 
 .templatery-field,
 .templatery-include span {
-    border-radius: 0.2em;
+    border-radius: 0.3em;
     padding-left: 0.2em;
     padding-right:0.2em;
+    margin-left: 0.05em;
+    margin-right: 0.05em;
     color: black;
 }
 .templatery-field {
     background-color: #ddf;
+    border-right: 1px solid __border__;
+    border-left: 1px solid __border__;
+}
+.templatery-field .marker {
+    color: #888;
+}
+.templatery-field .marker.separator {
+    margin-left: 0.1em;
+    padding-right: 0.1em;
+    color: __border__;
 }
 .templatery-include span {
     background-color: #dfd;
