@@ -75,19 +75,26 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
 
 class templatery_template_handler implements templatery_handler {
     public function __construct($variables) {
-        $this->vars = $variables;
+        $this->vars = array();
+        foreach($variables as $key=>$value) {
+            $this->vars[strtolower($key)] = $value;
+        }
     }
 
     public function hasField($field) {
+        $field = strtolower($field);
         return isset($this->vars[$field]);
     }
 
     public function getField($mode, &$R, $field, $default=null) {
+        $field = strtolower($field);
         return $this->hasField($field) ? $this->vars[$field] : $default;
     }
 
     public function displayField($mode, &$R, $field, $default=null) {
         if($mode != 'xhtml') return false;
+
+        $field = strtolower($field);
 
         $value = $this->getField($mode, $R, $field, $default);
 

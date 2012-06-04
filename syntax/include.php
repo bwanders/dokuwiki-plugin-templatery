@@ -62,10 +62,14 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
 class templatery_include_handler implements templatery_handler {
     public function __construct($variables, $parent) {
         $this->translation = $variables;
+		foreach($variables as $key=>$value) {
+			$this->translation[strtolower($key)] = $value;
+		}
         $this->parent = $parent;
     }
 
     private function getTranslation($field) {
+		$field = strtolower($field);
         if (isset($this->translation[$field])) {
             return $this->translation[$field];
         }
