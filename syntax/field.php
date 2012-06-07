@@ -54,7 +54,7 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
         if($mode != 'xhtml') return false;
 
         $R->doc .= '<span class="templatery-field">'.$R->_xmlEntities($field);
-        if($default) {
+        if($default != '') {
             $R->doc .= '<span class="marker separator">&#187;</span>'.$R->_xmlEntities($default);
         }
         $R->doc .= '</span>';
