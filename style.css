@@ -60,16 +60,18 @@ div.templatery-conditional .templatery-if {
 
 span.templatery-conditional {
     padding-left: 2px;
-	padding-right: 2px;
+    padding-right: 2px;
+    margin-left: 2px;
     border-right: 2px solid #faa;
     border-left: 2px solid #faa;
-	border-radius: 0.2em;
+    border-radius: 0.2em;
 }
 span.templatery-conditional .templatery-if {
     font-size: 80%;
     padding-left: 2px;
     padding-right: 2px;
-	margin-right: 2px;
+    margin-right: 2px;
+    margin-left: 0px;
     border-radius: 0.2em;
     background-color: #faa;
     color: black;
