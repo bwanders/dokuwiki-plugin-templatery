@@ -39,7 +39,7 @@ class syntax_plugin_templatery_inlineconditional extends DokuWiki_Syntax_Plugin 
 
     public function connectTo($mode) {
         $this->Lexer->addEntryPattern('<if +?!?[^>]+>(?=.*?</if>)',$mode,'plugin_templatery_inlineconditional');
-        $this->Lexer->addEntryPattern('<~if +?!?[^>]+>(?=.*?</if>)',$mode,'plugin_templatery_inlineconditional');
+        $this->Lexer->addEntryPattern('<\*if +?!?[^>]+>(?=.*?</if>)',$mode,'plugin_templatery_inlineconditional');
     }
 
     public function postConnect() {
