@@ -39,6 +39,7 @@ class syntax_plugin_templatery_inlineconditional extends DokuWiki_Syntax_Plugin 
 
     public function connectTo($mode) {
         $this->Lexer->addEntryPattern('<if +?!?[^>]+>(?=.*?</if>)',$mode,'plugin_templatery_inlineconditional');
+        $this->Lexer->addEntryPattern('<~if +?!?[^>]+>(?=.*?</if>)',$mode,'plugin_templatery_inlineconditional');
     }
 
     public function postConnect() {
@@ -49,7 +50,7 @@ class syntax_plugin_templatery_inlineconditional extends DokuWiki_Syntax_Plugin 
         switch($state) {
             case DOKU_LEXER_ENTER:
                 // interpret conditional
-                preg_match('/<if +?(!)?([^>]+)>/', $match, $capture);
+                preg_match('/<~?if +?(!)?([^>]+)>/', $match, $capture);
 
                 // create new capturer
                 $capturer = new Templatery_Handler_Inline_Capture($handler->CallWriter, trim($capture[2]), $capture[1] == '!');
