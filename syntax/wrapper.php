@@ -39,7 +39,7 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
 
 
     public function connectTo($mode) {
-        $this->Lexer->addEntryPattern('<template +[^>\n]*>(?=.*?</template>)',$mode,'plugin_templatery_wrapper');
+        $this->Lexer->addEntryPattern('<template[^>\n]*>(?=.*?</template>)',$mode,'plugin_templatery_wrapper');
     }
 
     public function postConnect() {
@@ -71,7 +71,7 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
                 }
 
                 // grab the name
-                preg_match('/<template +([^>\n]*)>/',$match,$capture);
+                preg_match('/<template([^>\n]*)>/',$match,$capture);
 
                 // output an instruction
                 return array($state, $this->helper->cleanTemplateId($capture[1]), $capture[1]);
