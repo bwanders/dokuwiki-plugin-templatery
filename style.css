@@ -37,32 +37,29 @@
  * Substitution field and template inclusion.
  */
 .templatery-field,
-.templatery-include span {
-    border-radius: 0.3em;
-    padding-left: 0.2em;
-    padding-right:0.2em;
+.templatery-include {
+    color: __text__;
+
+    border-radius: 10em;
+    padding-left: 0.5em;
+    padding-right:0.5em;
     margin-left: 0.05em;
     margin-right: 0.05em;
-    color: black;
+
+    background-color: #ccf;
+    box-shadow: 0 0 0.25em #888 inset;
 }
 
 /** Subsitution field */
 .templatery-field {
-    background-color: #ddf;
-    border-right: 1px solid __border__;
-    border-left: 1px solid __border__;
 }
 
 /** Seperator */
-.templatery-field .marker.separator {
-    margin-left: 0.1em;
-    padding-right: 0.1em;
-    color: __border__;
+.templatery-field .value-separator {
 }
 
 /** Template inclusion */
-.templatery-include span {
-    background-color: #dfd;
+.templatery-include {
 }
 
 

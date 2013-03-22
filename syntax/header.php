@@ -128,7 +128,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
                         } else {
                             $R->doc .= '<span class="templatery-field">'.$R->_xmlEntities($text);
                             if($ins[2]) {
-                                $R->doc .= '<span class="marker separator">&#187;</span>'.$R->_xmlEntities($ins[2]);
+                                $R->doc .= ' <span class="value-separator">&#187;</span> '.$R->_xmlEntities($ins[2]);
                             }
                             $R->doc .= '</span>';
                         }

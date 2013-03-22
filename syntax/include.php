@@ -46,12 +46,12 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
         } else {
             // render a preview
             if($mode == 'xhtml') {
-                $R->doc .= '<p class="templatery-include"><span>&#8249;';
-                $R->internallink($page,$id);
+                $R->doc .= '<p><span class="templatery-include">';
+                $R->doc .= '<span>'; $R->internallink($page,$id); $R->doc .= '</span>';
                 if(count($variables)) {
-                    $R->doc .= '&#187; '.implode(', ',array_map(function($from,$to){return hsc($to).' &#8594; '.hsc($from);},array_keys($variables),$variables));
+                    $R->doc .= ': '.implode(', ',array_map(function($from,$to){return hsc($to).' &#8594; '.hsc($from);},array_keys($variables),$variables));
                 }
-                $R->doc .= '&#8250;</span></p>';
+                $R->doc .= '</span></p>';
             }
         }
 
