@@ -80,7 +80,7 @@ class syntax_plugin_templatery_conditional extends DokuWiki_Syntax_Plugin {
             if($mode == 'xhtml') {
                 $caption = $data[1] ? 'conditional_without' : 'conditional_with';
                 $R->doc .= '<div class="templatery-conditional">';
-                $R->doc .= '<div><span class="templatery-if">'.sprintf($this->getLang($caption), $R->_xmlEntities($data[0])).'</span></div>';
+                $R->doc .= '<div class="templatery-condition">'.sprintf($this->getLang($caption), $R->_xmlEntities($data[0])).'</div>';
             }
         }
 

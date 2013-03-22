@@ -73,7 +73,7 @@ div.templatery-conditional {
     padding-left: 2px;
     border-left: 2px solid #faa;
 }
-div.templatery-conditional .templatery-if {
+div.templatery-conditional .templatery-condition {
     font-size: 80%;
     padding-left: 2px;
     margin-left: -2px;
@@ -93,7 +93,7 @@ span.templatery-conditional {
     border-left: 2px solid #faa;
     border-radius: 0.2em;
 }
-span.templatery-conditional .templatery-if {
+span.templatery-conditional .templatery-condition {
     font-size: 80%;
     padding-left: 2px;
     padding-right: 2px;
