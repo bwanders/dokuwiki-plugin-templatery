@@ -1,3 +1,6 @@
+/**
+ * The template wrapper.
+ */
 .templatery-wrapper {
     margin: 0 -2em 1.4em;
     padding: 0 2em;
@@ -9,23 +12,30 @@
 
     clear: both;
 }
+
+/** Template name header */
 .templatery-wrapper-header {
     font-size: 80%;
     text-align: center;
 
-    color: __text_neu__;
     background-color: __background_neu__;
-    text-shadow: 0 1px 0 __background__;
 
     border-bottom-left-radius: 5em;
     border-bottom-right-radius: 5em;
 
     margin-bottom: 0.5em;
 }
-.templatery-wrapper-label {
+
+/** Template name */
+.templatery-wrapper-header .templatery-wrapper-label {
+    color: __text_neu__;
+    text-shadow: 0 1px 0 __background__;
 }
 
 
+/**
+ * Substitution field and template inclusion.
+ */
 .templatery-field,
 .templatery-include span {
     border-radius: 0.3em;
@@ -35,24 +45,32 @@
     margin-right: 0.05em;
     color: black;
 }
+
+/** Subsitution field */
 .templatery-field {
     background-color: #ddf;
     border-right: 1px solid __border__;
     border-left: 1px solid __border__;
 }
-.templatery-field .marker {
-    color: #888;
-}
+
+/** Seperator */
 .templatery-field .marker.separator {
     margin-left: 0.1em;
     padding-right: 0.1em;
     color: __border__;
 }
+
+/** Template inclusion */
 .templatery-include span {
     background-color: #dfd;
 }
 
 
+/**
+ * Conditionals.
+ */
+
+/** Block conditional */
 div.templatery-conditional {
     margin-left: -4px;
     padding-left: 2px;
@@ -69,6 +87,7 @@ div.templatery-conditional .templatery-if {
     color: black;
 }
 
+/** Inline conditional */
 span.templatery-conditional {
     padding-left: 2px;
     padding-right: 2px;
@@ -88,6 +107,10 @@ span.templatery-conditional .templatery-if {
     color: black;
 }
 
+
+/**
+ * Inline Error display.
+ */
 .templatery-error {
     background-image: url(../../images/error.png);
     
