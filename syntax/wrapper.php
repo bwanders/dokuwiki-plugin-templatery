@@ -110,7 +110,6 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
                 // output wrapper div and label
                 $R->doc .= '<div class="templatery-wrapper">';
                 $R->doc .= '<div class="templatery-wrapper-header"><span class="templatery-wrapper-label">'.$R->_xmlEntities($data[2]).'</span></div>';
-                $R->doc .= '<div class="clearer"></div>';
                 break;
 
             // close div

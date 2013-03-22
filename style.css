@@ -1,17 +1,28 @@
 .templatery-wrapper {
-    margin: 0 0 1.0em 0;
-    background-color: __background_neu__;
+    margin: 0 -2em 1.4em;
+    padding: 0 2em;
+
+    background-color: __background_alt__;
     border-bottom:1px dotted __border__;
     border-top:1px dotted __border__;
+    box-shadow: 0 0.5em 0.5em -0.5em __border__ inset, 0 -0.5em 0.5em -0.5em __border__ inset;
+
+    clear: both;
 }
 .templatery-wrapper-header {
     font-size: 80%;
-    min-height: 1.0em;
+    text-align: center;
+
+    color: __text_neu__;
+    background-color: __background_neu__;
+    text-shadow: 0 1px 0 __background__;
+
+    border-bottom-left-radius: 5em;
+    border-bottom-right-radius: 5em;
+
+    margin-bottom: 0.5em;
 }
 .templatery-wrapper-label {
-    padding-right: 0.2em;
-    color: __border__;
-    float: right;
 }
 
 
