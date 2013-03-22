@@ -69,39 +69,44 @@
 
 /** Block conditional */
 div.templatery-conditional {
+    border-left: 2px solid #DDAAAA;
     margin-left: -4px;
     padding-left: 2px;
-    border-left: 2px solid #faa;
+
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
 }
+
 div.templatery-conditional .templatery-condition {
-    font-size: 80%;
-    padding-left: 2px;
+    display: inline-block;
+
+    border-radius: 0 10em 10em 0;
     margin-left: -2px;
-    padding-right: 2px;
-    border-top-right-radius: 0.2em;
-    border-bottom-right-radius: 0.2em;
-    background-color: #faa;
-    color: black;
+    padding-left: 0.25em;
+    padding-right: 0.5em;
+
+    background-color: #FFDDDD;
+    box-shadow: 0 0 0.5em #DDAAAA inset;
 }
 
 /** Inline conditional */
 span.templatery-conditional {
-    padding-left: 2px;
-    padding-right: 2px;
-    margin-left: 2px;
-    border-right: 2px solid #faa;
-    border-left: 2px solid #faa;
-    border-radius: 0.2em;
+    background-color: #fdd;
+
+    border-radius: 10em;
+    border-right: 2px solid #daa;
+
+    padding-right: 0.25em;
 }
+
 span.templatery-conditional .templatery-condition {
-    font-size: 80%;
-    padding-left: 2px;
-    padding-right: 2px;
-    margin-right: 2px;
-    margin-left: 0px;
-    border-radius: 0.2em;
-    background-color: #faa;
-    color: black;
+    border-radius: 10em;
+    border-left: 2px solid #daa;
+
+    box-shadow: 0 0 0.5em #daa inset;
+
+    padding: 0 0.5em;
+    margin-right: 0.25em;
 }
 
 
