@@ -258,11 +258,9 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         if(isset($error)) {
             if($mode == 'xhtml') {
                 msg(sprintf($this->getLang($error),$id),-1);
-                $R->p_open();
-                $R->doc .= '<span class="templatery-error">';
+                $R->doc .= '<div class="error">';
                 $R->internallink($page,sprintf($this->getLang($error),$id));
-                $R->doc .= '</span>';
-                $R->p_close();
+                $R->doc .= '</div>';
             }
         } else {
             // display template

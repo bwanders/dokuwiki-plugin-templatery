@@ -109,16 +109,3 @@ span.templatery-conditional > .templatery-condition {
     margin-right: 0.25em;
 }
 
-
-/**
- * Inline Error display.
- */
-.templatery-error {
-    background-image: url(../../images/error.png);
-    
-    background-repeat: no-repeat;
-    background-position: 0 0;
-    font-size: 100%;
-    padding-left: 1.5em;
-    overflow: hidden;
-}
