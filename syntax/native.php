@@ -91,4 +91,3 @@ class syntax_plugin_templatery_native extends DokuWiki_Syntax_Plugin {
     }
 }
 
-// vim:ts=4:sw=4:et:

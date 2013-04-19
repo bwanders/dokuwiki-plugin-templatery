@@ -104,4 +104,3 @@ class templatery_template_handler implements templatery_handler {
     }
 }
 
-// vim:ts=4:sw=4:et:
