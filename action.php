@@ -9,8 +9,6 @@
 // must be run within Dokuwiki
 if (!defined('DOKU_INC')) die('Meh.');
 
-require_once DOKU_PLUGIN.'templatery/templatery_handler.php';
-
 /**
  * This plugin takes care of the cache check.
  */
@@ -47,3 +45,25 @@ class action_plugin_templatery extends DokuWiki_Action_Plugin {
         $cache->depends['files'] = array_merge($cache->depends['files'], array_map('wikiFN',$pages['actual']));
     }
 }
+
+/**
+ * Templatery 'pluggable' autoloader. This function is responsible
+ * for autoloading classes.
+ *
+ * @param fullname string the name of the class to load
+ */
+function plugin_templatery_autoload($fullname) {
+    static $classes = null;
+    if(is_null($classes)) $classes = array(
+        'templatery_handler' => DOKU_PLUGIN.'templatery/lib/templatery_handler.php',
+   );
+
+    if(isset($classes[$fullname])) {
+        require_once($classes[$fullname]);
+        return;
+    }
+}
+
+// register autoloader with SPL loader stack
+spl_autoload_register('plugin_templatery_autoload');
+
