@@ -112,8 +112,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
             $R->lastlevel = $level;
 
             // write the header
-            $R->doc .= DOKU_LF.'<h'.$level;
-            $R->doc .= '><a name="'.$hid.'" id="'.$hid.'">';
+            $R->doc .= DOKU_LF.'<h'.$level.' id="'.$hid.'">';
             // $R->doc .= $R->_xmlEntities($text);
             foreach($instructions as $ins) {
                 $text = $ins[1];
@@ -135,7 +134,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
                         break;
                 }
             }
-            $R->doc .= "</a></h$level>".DOKU_LF;
+            $R->doc .= "</h$level>".DOKU_LF;
 
             return true;
         } elseif($mode == 'metadata') {
