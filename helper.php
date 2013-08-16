@@ -294,6 +294,13 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     }
 
     /**
+     * Delegate listFields.
+     */
+    public function listFields() {
+        return $this->getDelegate()->listFields();
+    }
+
+    /**
      * Delegate getField.
      */
     public function getField($mode, &$R, $field, $default) {

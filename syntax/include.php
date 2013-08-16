@@ -68,6 +68,15 @@ class templatery_include_handler implements templatery_handler {
         $this->parent = $parent;
     }
 
+    public function listFields() {
+        if($this->parent != null) {
+            $base = $this->parent->listFields();
+            return array_merge($base, array_keys($this->translation));
+        }
+
+        return array();
+    }
+
     private function getTranslation($field) {
 		$field = strtolower($field);
         if (isset($this->translation[$field])) {

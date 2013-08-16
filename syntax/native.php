@@ -46,6 +46,11 @@ class syntax_plugin_templatery_native extends DokuWiki_Syntax_Plugin {
         return $this->helper->hasField($field);
     }
 
+    protected function listFields() {
+        if($this->isPreview()) return array();
+        return $this->helper->listFields();
+    }
+
     /**
      * Displays a field. Also works in preview mode.
      */

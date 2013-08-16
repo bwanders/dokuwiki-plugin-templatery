@@ -81,6 +81,10 @@ class templatery_template_handler implements templatery_handler {
         }
     }
 
+    public function listFields() {
+        return array_keys($this->vars);
+    }
+
     public function hasField($field) {
         $field = strtolower($field);
         return isset($this->vars[$field]);

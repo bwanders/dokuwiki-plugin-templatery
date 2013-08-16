@@ -22,6 +22,14 @@ interface templatery_handler {
     public function hasField($field);
 
     /**
+     * Returns a list of fields that are guaranteed to be available in the handler. Note that
+     * this method explicitly not lists all fields, and can return any subset of available fields.
+     *
+     * @return a list of fields that is guaranteed to be available
+     */
+    public function listFields();
+
+    /**
      * Retrieve a textual representation of a field.
      * 
      * @param mode string the rendering mode
