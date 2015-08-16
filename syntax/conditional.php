@@ -103,7 +103,7 @@ class syntax_plugin_templatery_conditional extends DokuWiki_Syntax_Plugin {
 /**
  * A custom handler to capture the contents of the conditional.
  */
-class Templatery_Handler_Capture {
+class Templatery_Handler_Capture implements Doku_Handler_CallWriter_Interface {
     var $CallWriter;
     var $calls = array();
 
