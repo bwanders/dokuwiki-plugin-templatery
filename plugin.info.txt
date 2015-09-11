@@ -1,7 +1,7 @@
 base   templatery
 author Brend Wanders
 email  b.wanders@utwente.nl
-date   2014-08-16
+date   2015-09-12
 name   Templatery
 desc   Offers template functionality, mainly intended for explorational use
 url    http://github.com/bwanders/dokuwiki-plugin-templatery
