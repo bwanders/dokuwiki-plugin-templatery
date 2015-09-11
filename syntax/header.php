@@ -102,14 +102,25 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
             // only add items within the configured levels
             $R->toc_additem($hid,$text,$level);
 
+            // This is a rather shifty workaround to access the internals of the
+            // XHTML renderer.
+            $node_access = new ReflectionProperty('Doku_Renderer_xhtml', 'node');
+            $lastlevel_access = new ReflectionProperty('Doku_Renderer_xhtml', 'lastlevel');
+
+            $node_access->setAccessible(true);
+            $lastlevel_access->setAccessible(true);
+
             // adjust $node to reflect hierarchy of levels
-            $R->node[$level-1]++;
-            if ($level < $R->lastlevel) {
-                for ($i = 0; $i < $R->lastlevel-$level; $i++) {
-                    $R->node[$R->lastlevel-$i-1] = 0;
+            $nodes =& $node_access->getValue($R);
+            $lastlevel = $lastlevel_access->getValue($R);
+
+            $nodes[$level-1]++;
+            if ($level < $lastlevel) {
+                for ($i = 0; $i < $lastlevel-$level; $i++) {
+                    $nodes[$lastlevel-$i-1] = 0;
                 }
             }
-            $R->lastlevel = $level;
+            $lastlevel_access->setValue($R, $level);
 
             // write the header
             $R->doc .= DOKU_LF.'<h'.$level.' id="'.$hid.'">';
