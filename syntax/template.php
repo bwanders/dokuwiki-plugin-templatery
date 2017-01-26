@@ -34,7 +34,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}',$mode,'plugin_templatery_template');
     }
 
-    public function handle($match, $state, $pos, &$handler){
+    public function handle($match, $state, $pos, $handler){
         preg_match('/\{\{template>([^\}|]+?)(?:\|([^}]+?))?}}/msS',$match,$capture);
         $id = $capture[1];
         $vars = $capture[2];
@@ -58,7 +58,7 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
         return array($id, $variables, $sectioning);
     }
 
-    public function render($mode, &$R, $data) {
+    public function render($mode, $R, $data) {
         list($id, $variables, $sectioning) = $data;
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);

@@ -30,7 +30,7 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
         $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_include');
     }
 
-    public function render($mode, &$R, $data) {
+    public function render($mode, $R, $data) {
         list($id, $variables, $sectioning) = $data;
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);

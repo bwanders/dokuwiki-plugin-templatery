@@ -34,7 +34,7 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('@@.+?@@',$mode,'plugin_templatery_field');
     }
 
-    public function handle($match, $state, $pos, &$handler){
+    public function handle($match, $state, $pos, $handler){
         global $ID;
 
         preg_match('/@@(.+?)(?:\|(.+?))?@@/msS',$match,$capture);
@@ -42,7 +42,7 @@ class syntax_plugin_templatery_field extends DokuWiki_Syntax_Plugin {
         return array($capture[1], $capture[2]);
     }
 
-    public function render($mode, &$R, $data) {
+    public function render($mode, $R, $data) {
         list($field, $default) = $data;
 
         // check if we are delegating

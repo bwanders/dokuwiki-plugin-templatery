@@ -67,11 +67,11 @@ class syntax_plugin_templatery_native extends DokuWiki_Syntax_Plugin {
         return $includer->render($mode, $R, array($id, $variables, array(false) ));
     }
 
-    public function handle($match, $state, $pos, &$handler){
+    public function handle($match, $state, $pos, $handler){
         return array();
     }
    
-    public function render($mode, &$R, $data) {
+    public function render($mode, $R, $data) {
         return false;
     }
 
