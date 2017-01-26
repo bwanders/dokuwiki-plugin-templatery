@@ -46,7 +46,7 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addExitPattern('</template>','plugin_templatery_wrapper');
     }
 
-    public function handle($match, $state, $pos, $handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
         switch($state) {
             case DOKU_LEXER_ENTER:
                 // close section and store the level of the section we just closed
@@ -102,7 +102,7 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
         return false;
     }
 
-    public function render($mode, $R, $data) {
+    public function render($mode, Doku_Renderer $R, $data) {
         if($mode != 'xhtml') return false;
 
         switch($data[0]) {
@@ -122,4 +122,3 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
         return true;
     }
 }
-

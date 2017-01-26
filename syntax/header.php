@@ -35,7 +35,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
         $this->Lexer->addSpecialPattern('[ \t]*={2,}[^\n]+={2,}[ \t]*(?=\n)', $mode, 'plugin_templatery_header');
     }
 
-    function handle($match, $state, $pos, $handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
         // code joinked from handler.php
 
         // get level and title
@@ -73,7 +73,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
     /**
      * Fakes a header. This method is heavily copied from inc/parser/xhtml.php.
      */
-    function render($mode, $R, $data) {
+    function render($mode, Doku_Renderer $R, $data) {
         list($text,$level,$instructions) = $data;
 
         // convert all instructions to text
@@ -94,9 +94,9 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
 
         // render the header to XHTML
         if ($mode == 'xhtml') {
-        
+
             if(!$text) return;
-            
+
             $hid = $R->_headerToLink($text,true);
 
             // only add items within the configured levels

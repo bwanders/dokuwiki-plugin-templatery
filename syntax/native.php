@@ -11,7 +11,7 @@ if (!defined('DOKU_INC')) die('Meh.');
 
 /**
  * Base class for native template implementations.
- * 
+ *
  * A native template implementation is supported through a set of helper
  * methods in this base class.
  */
@@ -21,11 +21,11 @@ class syntax_plugin_templatery_native extends DokuWiki_Syntax_Plugin {
     public function __construct() {
         $this->helper =& plugin_load('helper','templatery');
     }
-    
+
     /**
      * The name of the native template. This is used to determine the
      * required syntax. (i.e., the syntax is @@->name@@).
-     */ 
+     */
     protected function getName() {
         return false;
     }
@@ -67,11 +67,11 @@ class syntax_plugin_templatery_native extends DokuWiki_Syntax_Plugin {
         return $includer->render($mode, $R, array($id, $variables, array(false) ));
     }
 
-    public function handle($match, $state, $pos, $handler){
+    public function handle($match, $state, $pos, Doku_Handler $handler){
         return array();
     }
-   
-    public function render($mode, $R, $data) {
+
+    public function render($mode, Doku_Renderer $R, $data) {
         return false;
     }
 
@@ -95,4 +95,3 @@ class syntax_plugin_templatery_native extends DokuWiki_Syntax_Plugin {
         }
     }
 }
-

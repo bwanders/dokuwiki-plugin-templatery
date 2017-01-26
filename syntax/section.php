@@ -33,11 +33,11 @@ class syntax_plugin_templatery_section extends DokuWiki_Syntax_Plugin {
         //no connection
     }
 
-    function handle($match, $state, $pos, $handler) {
+    function handle($match, $state, $pos, Doku_Handler $handler) {
         return false;
     }
 
-    function render($mode, $R, $data) {
+    function render($mode, Doku_Renderer $R, $data) {
         switch($data[0]) {
             case 'open':
                 $R->section_open($data[1]);

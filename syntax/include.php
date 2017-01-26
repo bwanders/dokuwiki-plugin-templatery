@@ -30,14 +30,14 @@ class syntax_plugin_templatery_include extends syntax_plugin_templatery_template
         $this->Lexer->addSpecialPattern('\{\{template>[^}]+?}}', $mode, 'plugin_templatery_include');
     }
 
-    public function render($mode, $R, $data) {
+    public function render($mode, Doku_Renderer $R, $data) {
         list($id, $variables, $sectioning) = $data;
 
         list($page, $hash) = $this->helper->resolveTemplate($id, $exists);
 
         // prepare template for rendering
         $template = $this->helper->prepareTemplate($mode, $R, $page, $hash, $error);
-        
+
         // check that we're not previewing
         if($this->helper->isDelegating()) {
             $handler = new templatery_include_handler($variables, $this->helper->getDelegate());
