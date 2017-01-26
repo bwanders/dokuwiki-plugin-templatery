@@ -14,7 +14,7 @@ if (!defined('DOKU_INC')) die('Meh.');
  */
 class action_plugin_templatery extends DokuWiki_Action_Plugin {
 
-    public function register(Doku_Event_Handler &$controller) {
+    public function register(Doku_Event_Handler $controller) {
         $controller->register_hook('PARSER_CACHE_USE', 'BEFORE', $this, '_check_cache');
     }
 
