@@ -46,9 +46,9 @@ class syntax_plugin_templatery_template extends DokuWiki_Syntax_Plugin {
         for($i=0;$i<count($vars);$i++) {
             if(trim($vars[$i])=='') continue;
             if(preg_match('/^(.+?)=(.*)$/',$vars[$i],$capture)) {
-                $variables[$capture[1]] = $capture[2];
+                $variables[$capture[1]] = trim($capture[2]);
             } else {
-                $variables[$j++] = $vars[$i];
+                $variables[$j++] = trim($vars[$i]);
             }
         }
 

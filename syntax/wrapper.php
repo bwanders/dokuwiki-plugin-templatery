@@ -50,9 +50,9 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
         switch($state) {
             case DOKU_LEXER_ENTER:
                 // close section and store the level of the section we just closed
-                if ($handler->status['section']) {
-                    $handler->_addCall('section_close',array(),$pos);
-                    $handler->status['section'] = false;
+                if ($handler->getStatus('section')) {
+                    $handler->addCall('section_close',array(),$pos);
+                    $handler->setStatus('section', false);
 
                     // did we put the template into a section?
                     // determine the level of the section
@@ -78,22 +78,22 @@ class syntax_plugin_templatery_wrapper extends DokuWiki_Syntax_Plugin {
 
             case DOKU_LEXER_UNMATCHED:
                 // we don't care about unmatched things; just get them rendered
-                $handler->_addCall('cdata', array($match), $pos);
+                $handler->addCall('cdata', array($match), $pos);
                 return false;
 
             case DOKU_LEXER_EXIT:
                 // if we were in a section due to the template, close it
-                if ($handler->status['section']) {
-                    $handler->_addCall('section_close',array(),$pos);
-                    $handler->status['section'] = false;
+                if ($handler->getStatus('section')) {
+                    $handler->addCall('section_close',array(),$pos);
+                    $handler->setStatus('section', false);
                 }
 
                 $handler->addPluginCall('templatery_wrapper',array($state), $state, $pos, $match);
 
                 // if the template interupted a section, reopen it
                 if(isset($this->level)) {
-                    $handler->_addCall('section_open', array($this->level), $pos);
-                    $handler->status['section'] = true;
+                    $handler->addCall('section_open', array($this->level), $pos);
+                    $handler->setStatus('section', true);
                 }
 
                 return false;

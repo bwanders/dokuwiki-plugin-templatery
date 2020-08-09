@@ -9,6 +9,10 @@
 // must be run within Dokuwiki
 if (!defined('DOKU_INC')) die('Meh.');
 
+use dokuwiki\Parsing\Handler\Block;
+use dokuwiki\Parsing\Handler\CallWriterInterface;
+
+
 /**
  * The inline conditional.
  */
@@ -53,21 +57,21 @@ class syntax_plugin_templatery_inlineconditional extends DokuWiki_Syntax_Plugin 
                 preg_match('/<\*?if +?(!)?([^>]+)>/', $match, $capture);
 
                 // create new capturer
-                $capturer = new Templatery_Handler_Inline_Capture($handler->CallWriter, trim($capture[2]), $capture[1] == '!');
+                $capturer = new Templatery_Handler_Inline_Capture($handler->getCallWriter(), trim($capture[2]), $capture[1] == '!');
 
                 // push capturer into daisychain
-                $handler->CallWriter =& $capturer;
+                $handler->setCallWriter($capturer);
                 return false;
 
             case DOKU_LEXER_UNMATCHED:
                 // we don't care about unmatched things; just get them rendered
-                $handler->_addCall('cdata', array($match), $pos);
+                $handler->addCall('cdata', array($match), $pos);
                 return false;
 
             case DOKU_LEXER_EXIT:
                 // restore old CallWriter
-                $capturer =& $handler->CallWriter;
-                $handler->CallWriter =& $capturer->CallWriter;
+                $capturer =& $handler->getCallWriter();
+                $handler->setCallWriter($capturer->callWriter);
 
                 return array($capturer->variable, $capturer->negation, $capturer->process());
         }
@@ -104,12 +108,12 @@ class syntax_plugin_templatery_inlineconditional extends DokuWiki_Syntax_Plugin 
 /**
  * A custom handler to capture the contents of the conditional.
  */
-class Templatery_Handler_Inline_Capture implements Doku_Handler_CallWriter_Interface {
-    var $CallWriter;
+class Templatery_Handler_Inline_Capture implements CallWriterInterface {
+    var $callWriter;
     var $calls = array();
 
     function __construct(&$callWriter, $variable, $negation) {
-        $this->CallWriter =& $callWriter;
+        $this->callWriter =& $callWriter;
         $this->variable = $variable;
         $this->negation = $negation;
     }

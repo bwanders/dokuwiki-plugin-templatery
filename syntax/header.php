@@ -45,9 +45,8 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
         $title = trim($title,'=');
         $title = trim($title);
 
-
         // be a good handler, and maintain the call sequence
-        if ($handler->status['section']) $handler->_addCall('section_close',array(),$pos);
+        if ($handler->getStatus('section')) $handler->addCall('section_close', array(), $pos);
 
         // output a plugin call to this plugin, instead of to the normal header
         $result = preg_split('/(@@.*?@@)/msS', $title, null, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
@@ -63,8 +62,8 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
         $handler->addPluginCall('templatery_header', array($title,$level,$instructions), $state, $pos, $match);
 
         // open a new section after we started with this header
-        $handler->_addCall('section_open',array($level),$pos);
-        $handler->status['section'] = true;
+        $handler->addCall('section_open',array($level),$pos);
+        $handler->setStatus('section', true);
 
         // de not output a plugin instruction
         return false;
@@ -114,6 +113,7 @@ class syntax_plugin_templatery_header extends DokuWiki_Syntax_Plugin {
             $nodes =& $node_access->getValue($R);
             $lastlevel = $lastlevel_access->getValue($R);
 
+            // adjust $node to reflect hierarchy of levels
             $nodes[$level-1]++;
             if ($level < $lastlevel) {
                 for ($i = 0; $i < $lastlevel-$level; $i++) {

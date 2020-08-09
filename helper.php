@@ -43,7 +43,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
      * Determines the current sectioning information.
      */
     public function getSectioning(&$handler) {
-        $section = $handler->status['section'];
+        $section = $handler->getStatus('section');
         if($section) {
             // determine the level of the section
             for($i=count($handler->calls); $i --> 0 ;) {
