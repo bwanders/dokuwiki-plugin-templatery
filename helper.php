@@ -12,7 +12,7 @@ if (!defined('DOKU_INC')) die('Meh.');
 class helper_plugin_templatery extends DokuWiki_Plugin {
     /**
      * Resolves a template identifier.
-     * 
+     *
      * @param id string the template identifier
      * @param exists boolean will be set to whether the page existed or not
      * @return an array containing the resolved page and normalized template id
@@ -60,7 +60,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     /**
      * Prepares a template for rendering. This takes care of metadata
      * renering as well.
-     * 
+     *
      * @param mode string the rendering mode
      * @param R object the renderer
      * @param page string the page id of the template to prepare
@@ -116,7 +116,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
 
     /**
      * Loads a template.
-     * 
+     *
      * @return an array of instructions, or null if the template could not be made available
      */
     public function loadTemplate($page, $hash) {
@@ -151,21 +151,21 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
             $closedSection = false;
             for($i=0;$i<count($instructions);$i++) {
                 $ins = $instructions[$i];
-    
+
                 // we encounter a <template>
                 if($ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_ENTER && (empty($hash) || $ins[1][1][1] == $hash)) {
                     $inTemplate = true;
                     $template = array();
                     continue;
                 }
-    
+
                 // we encounter the first header while we're being included in a section
                 if($inTemplate && !$closedSection && $ins[0]=='plugin' && $ins[1][0]=='templatery_header') {
                     // close the section
                     $template[] = array('plugin',array('templatery_section',array('conditional_close'),0,''),$ins[2]);
                     $closedSection = true;
                 }
-    
+
                 // we encounter a </template>
                 if($inTemplate && $ins[0]=='plugin' && $ins[1][0]=='templatery_wrapper' && $ins[1][1][0] == DOKU_LEXER_EXIT) {
                     if($closedSection) {
@@ -173,15 +173,15 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
                     }
                     break;
                 }
-    
+
                 // all other instructions
                 if($inTemplate) {
                     switch($ins[0]) {
                         // replace section_close and section_open with templatery-aware versions
                         case 'section_open': $template[] = array('plugin',array('templatery_section',array('open',$ins[1][0]),0,''),$ins[2]); break;
-    
+
                         case 'section_close': $template[] = array('plugin',array('templatery_section',array('close'),0,''),$ins[2]); break;
-    
+
                         // any other instruction goes straight into the list
                         default: $template[] = $ins; break;
                     }
@@ -236,7 +236,7 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
     public function isDelegating() {
         return count(self::$delegates) > 0;
     }
-    
+
     /**
      * Gets the idx'th stack delegate from stack top.
      */
@@ -341,4 +341,3 @@ class helper_plugin_templatery extends DokuWiki_Plugin {
         return end(self::$sections);
     }
 }
-

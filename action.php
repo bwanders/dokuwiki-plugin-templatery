@@ -66,4 +66,3 @@ function plugin_templatery_autoload($fullname) {
 
 // register autoloader with SPL loader stack
 spl_autoload_register('plugin_templatery_autoload');
-
